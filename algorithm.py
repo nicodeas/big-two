@@ -97,6 +97,25 @@ class Card:
         return False
 
 
+class Hand:
+    cards: list[Card] = None
+
+    def __init__(self, cards: list[Card]) -> None:
+        self.cards = cards
+
+    def sort_by_suit(self) -> None:
+        self.cards.sort(key=lambda x: x.suit)
+
+    def sort_by_rank(self) -> None:
+        self.cards.sort(key=lambda x: x.rank)
+
+    def get_hand(self) -> list[Card]:
+        return self.cards
+
+    def get_hand_strength(self):
+        pass
+
+
 class Algorithm:
 
     def getAction(self, state: MatchState):
