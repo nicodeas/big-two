@@ -86,6 +86,16 @@ class Card:
             return True
         return False
 
+    def __lt__(self, other) -> bool:
+        assert isinstance(other, Card)
+        if Rank.strength(self.rank) < Rank.strength(other.rank):
+            return True
+        elif Rank.strength(self.rank) > Rank.strength(other.rank):
+            return False
+        elif Suit.strength(self.suit) < Suit.strength(other.suit):
+            return True
+        return False
+
 
 class Algorithm:
 
