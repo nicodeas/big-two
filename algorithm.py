@@ -45,7 +45,8 @@ class Rank:
             Rank.A: 12,
             Rank._2: 13,
         }
-        return strength[rank]
+        # 2x as rank more important than suite
+        return 2 * strength[rank]
 
 
 class Card:
@@ -71,6 +72,10 @@ class Card:
     def __init__(self, card: str) -> None:
         self.rank = self.rank_mapping[card[0]]
         self.suit = self.suit_mapping[card[1]]
+
+    def strength(card):
+        assert isinstance(card, Card)
+        return Rank.strength(card.rank) + Suit.strength(card.suit)
 
     def __eq__(self, other) -> bool:
         assert isinstance(other, Card)
@@ -99,6 +104,9 @@ class Card:
 
 class Hand:
     cards: list[Card] = None
+    TWO_CARD_STRENGTH_MULTIPLIER = 2
+    THREE_CARD_STRENGTH_MULTIPLIER = 4
+    STRAIGH_STRENGTH_MULTIPLIER = 8
 
     def __init__(self, cards: list[Card]) -> None:
         self.cards = cards
@@ -113,6 +121,59 @@ class Hand:
         return self.cards
 
     def get_hand_strength(self):
+        pass
+
+    def get_2_card_tricks(self) -> tuple[list[tuple[Card, Card]], int]:
+        self.sort_by_suit()
+        self.sort_by_rank()
+        tricks: list[tuple[Card, Card]] = []
+        value = 0
+        for i in range(1, len(self.cards)):
+            if self.cards[i].rank == self.cards[i - 1].rank:
+                tricks.append((self.cards[i - 1], self.cards[i]))
+                value += Card.strength(self.cards[i - 1]) + Card.strength(self.cards[i])
+        return tricks, value * self.TWO_CARD_STRENGTH_MULTIPLIER
+
+    def get_3_card_tricks(self) -> tuple[list[tuple[Card, Card, Card]], int]:
+        pass
+
+    def get_straight_tricks(
+        self,
+    ) -> tuple[list[tuple[Card, Card, Card, Card, Card]], int]:
+        # TODO: easy
+        pass
+
+    def get_flush_tricks(self) -> tuple[list[tuple[Card, Card, Card, Card, Card]], int]:
+        # TODO: easy
+        pass
+
+    def get_full_house_tricks(
+        self,
+    ) -> tuple[list[tuple[Card, Card, Card, Card, Card]], int]:
+        # many combinations
+        pass
+
+    def get_four_of_a_kind_tricks(
+        self,
+    ) -> tuple[list[tuple[Card, Card, Card, Card, Card]], int]:
+        # how to figure out what card to throw away in this?
+        pass
+
+    def get_straight_flush_tricks(
+        self,
+    ) -> tuple[list[tuple[Card, Card, Card, Card, Card]], int]:
+        # get straight trick + check that all same suit
+        pass
+
+    def get_5_card_tricks(
+        self,
+    ) -> tuple[list[tuple[Card, Card, Card, Card, Card]], int]:
+        # TODO: weakest(top) to strongest (bottom)
+        # get_straight_tricks
+        # get_flush_tricks
+        # get_full_house_tricks
+        # get_four_of_a_kind_tricks
+        # get_straight_flush_tricks
         pass
 
 
