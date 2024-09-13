@@ -101,6 +101,9 @@ class Card:
             return True
         return False
 
+    def __repr__(self) -> str:
+        return f"Card<{self.rank}{self.suit}>"
+
 
 class Hand:
     cards: list[Card] = None
