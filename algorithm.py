@@ -50,8 +50,8 @@ class Rank:
 
 
 class Card:
-    rank: Rank
-    suit: Suit
+    rank: str
+    suit: str
     rank_mapping = {
         "3": Rank._3,
         "4": Rank._4,
@@ -73,6 +73,7 @@ class Card:
         self.rank = self.rank_mapping[card[0]]
         self.suit = self.suit_mapping[card[1]]
 
+    @staticmethod
     def strength(card):
         assert isinstance(card, Card)
         return Rank.strength(card.rank) + Suit.strength(card.suit)
@@ -130,14 +131,19 @@ class Hand:
 
     @staticmethod
     def get_2_card_tricks(cards: list[Card]) -> tuple[list[tuple[Card, Card]], int]:
-        cards.sort(key=lambda x: x.suit)
-        cards.sort(key=lambda x: x.rank)
+        cards.sort(key=lambda x: Suit.strength(x.suit))
+        cards.sort(key=lambda x: Rank.strength(x.rank))
         tricks: list[tuple[Card, Card]] = []
         value = 0
-        for i in range(1, len(cards)):
-            if cards[i].rank == cards[i - 1].rank:
-                tricks.append((cards[i - 1], cards[i]))
-                value += Card.strength(cards[i - 1]) + Card.strength(cards[i])
+        n = len(cards)
+        for i in range(n):
+            for j in range(1, n - i):
+                if cards[i].rank == cards[i + j].rank:
+                    print(cards[i], cards[i + j])
+                    tricks.append((cards[i], cards[i + j]))
+                    value += Card.strength(cards[i]) + Card.strength(cards[i + j])
+                else:
+                    break
         return tricks, value * Hand.TWO_CARD_STRENGTH_MULTIPLIER
 
     @staticmethod
