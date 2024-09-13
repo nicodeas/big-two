@@ -117,11 +117,11 @@ class Hand:
 
     @staticmethod
     def sort_by_suit(cards: list[Card]) -> list[Card]:
-        return sorted(cards, key=lambda x: x.suit)
+        return sorted(cards, key=lambda x: Suit.strength(x.suit))
 
     @staticmethod
     def sort_by_rank(cards: list[Card]) -> list[Card]:
-        return sorted(cards, key=lambda x: x.rank)
+        return sorted(cards, key=lambda x: Rank.strength(x.rank))
 
     def get_hand(self) -> list[Card]:
         return self.cards
@@ -131,15 +131,14 @@ class Hand:
 
     @staticmethod
     def get_2_card_tricks(cards: list[Card]) -> tuple[list[tuple[Card, Card]], int]:
-        cards.sort(key=lambda x: Suit.strength(x.suit))
         cards.sort(key=lambda x: Rank.strength(x.rank))
+        cards.sort(key=lambda x: Suit.strength(x.suit))
         tricks: list[tuple[Card, Card]] = []
         value = 0
         n = len(cards)
         for i in range(n):
             for j in range(1, n - i):
                 if cards[i].rank == cards[i + j].rank:
-                    print(cards[i], cards[i + j])
                     tricks.append((cards[i], cards[i + j]))
                     value += Card.strength(cards[i]) + Card.strength(cards[i + j])
                 else:
