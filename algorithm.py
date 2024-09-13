@@ -114,11 +114,13 @@ class Hand:
     def __init__(self, cards: list[Card]) -> None:
         self.cards = cards
 
-    def sort_by_suit(self) -> None:
-        self.cards.sort(key=lambda x: x.suit)
+    @staticmethod
+    def sort_by_suit(cards: list[Card]) -> list[Card]:
+        return sorted(cards, key=lambda x: x.suit)
 
-    def sort_by_rank(self) -> None:
-        self.cards.sort(key=lambda x: x.rank)
+    @staticmethod
+    def sort_by_rank(cards: list[Card]) -> list[Card]:
+        return sorted(cards, key=lambda x: x.rank)
 
     def get_hand(self) -> list[Card]:
         return self.cards
@@ -126,50 +128,62 @@ class Hand:
     def get_hand_strength(self):
         pass
 
-    def get_2_card_tricks(self) -> tuple[list[tuple[Card, Card]], int]:
-        self.sort_by_suit()
-        self.sort_by_rank()
+    @staticmethod
+    def get_2_card_tricks(cards: list[Card]) -> tuple[list[tuple[Card, Card]], int]:
+        cards.sort(key=lambda x: x.suit)
+        cards.sort(key=lambda x: x.rank)
         tricks: list[tuple[Card, Card]] = []
         value = 0
-        for i in range(1, len(self.cards)):
-            if self.cards[i].rank == self.cards[i - 1].rank:
-                tricks.append((self.cards[i - 1], self.cards[i]))
-                value += Card.strength(self.cards[i - 1]) + Card.strength(self.cards[i])
-        return tricks, value * self.TWO_CARD_STRENGTH_MULTIPLIER
+        for i in range(1, len(cards)):
+            if cards[i].rank == cards[i - 1].rank:
+                tricks.append((cards[i - 1], cards[i]))
+                value += Card.strength(cards[i - 1]) + Card.strength(cards[i])
+        return tricks, value * Hand.TWO_CARD_STRENGTH_MULTIPLIER
 
-    def get_3_card_tricks(self) -> tuple[list[tuple[Card, Card, Card]], int]:
+    @staticmethod
+    def get_3_card_tricks(
+        cards: list[Card],
+    ) -> tuple[list[tuple[Card, Card, Card]], int]:
         pass
 
+    @staticmethod
     def get_straight_tricks(
-        self,
+        cards: list[Card],
     ) -> tuple[list[tuple[Card, Card, Card, Card, Card]], int]:
         # TODO: easy
         pass
 
-    def get_flush_tricks(self) -> tuple[list[tuple[Card, Card, Card, Card, Card]], int]:
+    @staticmethod
+    def get_flush_tricks(
+        cards: list[Card],
+    ) -> tuple[list[tuple[Card, Card, Card, Card, Card]], int]:
         # TODO: easy
         pass
 
+    @staticmethod
     def get_full_house_tricks(
-        self,
+        cards: list[Card],
     ) -> tuple[list[tuple[Card, Card, Card, Card, Card]], int]:
         # many combinations
         pass
 
+    @staticmethod
     def get_four_of_a_kind_tricks(
-        self,
+        cards: list[Card],
     ) -> tuple[list[tuple[Card, Card, Card, Card, Card]], int]:
         # how to figure out what card to throw away in this?
         pass
 
+    @staticmethod
     def get_straight_flush_tricks(
-        self,
+        cards: list[Card],
     ) -> tuple[list[tuple[Card, Card, Card, Card, Card]], int]:
         # get straight trick + check that all same suit
         pass
 
+    @staticmethod
     def get_5_card_tricks(
-        self,
+        cards: list[Card],
     ) -> tuple[list[tuple[Card, Card, Card, Card, Card]], int]:
         # TODO: weakest(top) to strongest (bottom)
         # get_straight_tricks
