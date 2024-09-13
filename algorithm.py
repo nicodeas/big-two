@@ -133,6 +133,8 @@ class Hand:
     def get_2_card_tricks(cards: list[Card]) -> tuple[list[tuple[Card, Card]], int]:
         cards.sort(key=lambda x: Rank.strength(x.rank))
         cards.sort(key=lambda x: Suit.strength(x.suit))
+        # TODO: maybe this has a tools that simplify this
+        # https://docs.python.org/3/library/itertools.html#itertools
         tricks: list[tuple[Card, Card]] = []
         value = 0
         n = len(cards)
@@ -149,6 +151,10 @@ class Hand:
     def get_3_card_tricks(
         cards: list[Card],
     ) -> tuple[list[tuple[Card, Card, Card]], int]:
+        # count numer of cards per rank
+        # if 3 cards -> 1 combination
+        # 4 cards -> 4C3 combinations = 4
+        # https://docs.python.org/3/library/itertools.html#itertools.combinations
         pass
 
     @staticmethod
