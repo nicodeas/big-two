@@ -40,3 +40,4 @@ class TestHand:
         expected = [(a, b), (a, c), (a, d), (b, c), (b, d), (c, d)]
         two_card_tricks, _ = Hand.get_2_card_tricks([a, b, c, d])
         assert two_card_tricks == expected
+

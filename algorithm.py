@@ -45,8 +45,9 @@ class Rank:
             Rank.A: 12,
             Rank._2: 13,
         }
-        # 2x as rank more important than suite
-        return 2 * strength[rank]
+        # 4x as rank more important than suite
+        # maps each card from 1-52 when combined with suit
+        return 4 * strength[rank]
 
 
 class Card:
@@ -110,7 +111,7 @@ class Hand:
     cards: list[Card] = None
     TWO_CARD_STRENGTH_MULTIPLIER = 2
     THREE_CARD_STRENGTH_MULTIPLIER = 4
-    STRAIGH_STRENGTH_MULTIPLIER = 8
+    STRAIGHT_STRENGTH_MULTIPLIER = 8
 
     def __init__(self, cards: list[Card]) -> None:
         self.cards = cards
@@ -153,7 +154,7 @@ class Hand:
     ) -> tuple[list[tuple[Card, Card, Card]], int]:
         # count numer of cards per rank
         # if 3 cards -> 1 combination
-        # 4 cards -> 4C3 combinations = 4
+        # 4 cards -> 4C3 combinations = 4 (if 4 cards, u have a four of a kind)
         # https://docs.python.org/3/library/itertools.html#itertools.combinations
         pass
 
