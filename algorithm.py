@@ -7,6 +7,8 @@ class Suit:
     H = "H"
     S = "S"
 
+    suits = [D, C, H, S]
+
     @staticmethod
     def strength(suit):
         strength = {Suit.D: 1, Suit.C: 2, Suit.H: 3, Suit.S: 4}
@@ -27,6 +29,8 @@ class Rank:
     K = "K"
     A = "A"
     _2 = "2"
+
+    ranks = [_3, _4, _5, _6, _7, _8, _9, T, J, Q, K, A, _2]
 
     @staticmethod
     def strength(rank):
@@ -204,6 +208,32 @@ class Hand:
         # get_four_of_a_kind_tricks
         # get_straight_flush_tricks
         pass
+
+
+class Match:
+    # maybe make another class for Game, each Match has 3 games
+    # keep track of points for each player
+    # for each game, keep track of what cards are left in the game, and which ones are not in ur hand
+    # how many cards the other players have left
+    def __init__(self):
+        deck = self.generate_deck()
+
+
+    @staticmethod
+    def generate_deck():
+        deck = set()
+        for r in Rank.ranks:
+            for s in Suit.suits:
+                deck.add(r+s)
+        return deck
+
+class Game:
+    def __init__(self):
+        self.deck = Match.generate_deck()
+        self.hand = Hand()
+
+        # remove ur cards from the deck and each move keep track of which cards are left
+    pass
 
 
 class Algorithm:
