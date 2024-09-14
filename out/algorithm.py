@@ -255,7 +255,7 @@ class Algorithm:
         # return self.tempPassMove()
         game.hand.cards = Hand.sort_by_strength(game.hand.cards)
         print(game.hand.cards)
-        if (not state.toBeat== 0):
+        if (not state.toBeat):
             return [str(game.hand.cards[0])], ""
         
         cardsToBeat = state.toBeat.cards
