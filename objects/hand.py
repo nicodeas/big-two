@@ -94,6 +94,9 @@ class Hand:
     def get_5_card_tricks(
         cards: list[Card],
     ) -> tuple[list[tuple[Card, Card, Card, Card, Card]], int]:
+        # maybe return as a dictionary with keys 1, 2, 3, 4, 5 for relative strength of 5 card tricks
+        # might make it easier to compare against
+
         # TODO: weakest(top) to strongest (bottom)
         # get_straight_tricks
         # get_flush_tricks
