@@ -14,7 +14,7 @@ mock_match_state = MatchState(
     myPlayerNum=0,  # You can mock this as 0
     players=[],  # Empty list for players
     myHand=deck[:5],  # Example hand
-    toBeat=mock_trick,  # No need to define, set as None
+    toBeat=None,  # No need to define, set as None
     matchHistory=[],  # Empty match history
     myData=''  # Empty string for myData
 )
