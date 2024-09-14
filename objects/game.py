@@ -5,7 +5,7 @@ class Game:
     def __init__(self, state):
         # reset the game state with the data object
         self.deck = self.generate_deck()
-        self.hand = Hand(state.myHand)
+        self.hand = Hand(cards=[Card(c) for c in state.myHand])
 
     @staticmethod
     def generate_deck():

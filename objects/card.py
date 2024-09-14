@@ -57,3 +57,6 @@ class Card:
 
     def __repr__(self) -> str:
         return f"{self.rank}{self.suit}"
+    
+    def __repr__(self) -> str:
+        return f"{self.rank}{self.suit}"

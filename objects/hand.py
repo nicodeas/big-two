@@ -30,8 +30,7 @@ class Hand:
 
     @staticmethod
     def get_2_card_tricks(cards: list[Card]) -> tuple[list[tuple[Card, Card]], int]:
-        cards.sort(key=lambda x: Rank.strength(x.rank))
-        cards.sort(key=lambda x: Suit.strength(x.suit))
+        cards.sort(key=lambda x: Card.strength(x))
         # TODO: maybe this has a tools that simplify this
         # https://docs.python.org/3/library/itertools.html#itertools
         tricks: list[tuple[Card, Card]] = []
@@ -102,3 +101,6 @@ class Hand:
         # get_four_of_a_kind_tricks
         # get_straight_flush_tricks
         pass
+
+    def __iter__(self) -> list[Card]:
+        return iter(self.cards)

@@ -6,14 +6,14 @@ deck = list(Game.generate_deck())
 
 mock_trick = Trick(
     playerNum=1,  # Mock player number, for example player 1
-    cards=[] # Example cards played in the trick
+    cards=deck[-2:] # Example cards played in the trick
 )
 
 # Mock object creation with only myHand being relevant
 mock_match_state = MatchState(
     myPlayerNum=0,  # You can mock this as 0
     players=[],  # Empty list for players
-    myHand=deck[:5],  # Example hand
+    myHand=['2S', '4H', '4S', '3C'],
     toBeat=None,  # No need to define, set as None
     matchHistory=[],  # Empty match history
     myData=''  # Empty string for myData

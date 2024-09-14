@@ -106,6 +106,9 @@ class Card:
 
     def __repr__(self) -> str:
         return f"{self.rank}{self.suit}"
+    
+    def __repr__(self) -> str:
+        return f"{self.rank}{self.suit}"
 
 class Hand:
     cards: list[Card] = None
@@ -136,8 +139,7 @@ class Hand:
 
     @staticmethod
     def get_2_card_tricks(cards: list[Card]) -> tuple[list[tuple[Card, Card]], int]:
-        cards.sort(key=lambda x: Rank.strength(x.rank))
-        cards.sort(key=lambda x: Suit.strength(x.suit))
+        cards.sort(key=lambda x: Card.strength(x))
         # TODO: maybe this has a tools that simplify this
         # https://docs.python.org/3/library/itertools.html#itertools
         tricks: list[tuple[Card, Card]] = []
@@ -209,11 +211,14 @@ class Hand:
         # get_straight_flush_tricks
         pass
 
+    def __iter__(self) -> list[Card]:
+        return iter(self.cards)
+
 class Game:
     def __init__(self, state):
         # reset the game state with the data object
         self.deck = self.generate_deck()
-        self.hand = Hand(state.myHand)
+        self.hand = Hand(cards=[Card(c) for c in state.myHand])
 
     @staticmethod
     def generate_deck():
@@ -239,45 +244,118 @@ class Match:
     def __init__(self):
         pass
 
+def is_one_card_trick_stronger(trick1, trick2):
+    return Card.strength(trick1[0]) > Card.strength(trick2[0])
+
+def is_two_card_trick_stronger(trick1, trick2):
+    trick1_strength = max(Card.strength(trick1[0]), Card.strength(trick1[1]))
+    trick2_strength = max(Card.strength(trick2[0]), Card.strength(trick2[1]))
+    
+    return trick1_strength > trick2_strength
+
+def is_trick_stronger(trick1, trick2):
+    size = len(trick2)
+    if size == 1:
+        return is_one_card_trick_stronger(trick1, trick2)
+    elif size == 2:
+        return is_two_card_trick_stronger(trick1, trick2)
+
+    return False
+
+def get_trick_value(trick):
+    pass
+
+
+
+def cards_to_strings(func):
+    def wrapper(*args, **kwargs):
+        action, myData = func(*args, **kwargs)
+        action = [str(card) for card in action]
+        return action, myData
+    return wrapper
 
 class Algorithm:
+    def __init__(self):
+        self.game = None
+        self.state = None
+
+    def start_of_game(self):
+        tricks, _ = Hand.get_2_card_tricks(self.game.hand.cards)
+        for trick in tricks:
+            if Card('3D') in trick:
+                return [*trick], ""
+        
+        return [Card('3D')], ""
+    
+    def first_move(self):
+        if Card('3D') in self.game.hand:
+            return self.start_of_game()
+        
+        tricks, _ = Hand.get_2_card_tricks(self.game.hand.cards)
+        print(tricks)
+        if (len(tricks)) > 0:
+            return [*tricks[0]], ""
+        
+        self.game.hand.cards = Hand.sort_by_strength(self.game.hand)
+        print(f"Sorted deck (first move): {self.game.hand.cards}")
+        return [self.game.hand.cards[0]], ""
+    
+    def one_card_trick(self):
+        tricks = Hand.sort_by_strength(self.game.hand)
+        trick_to_beat = self.state.toBeat.cards
+        
+        print(f"Sorted deck (one card trick): {tricks}")
+        for trick in tricks:
+            if (is_trick_stronger([trick], trick_to_beat)):
+                return [trick], ""
+        
+        return self.tempPassMove()
+
+    def two_card_trick(self):
+        tricks, _ = Hand.get_2_card_tricks(self.game.hand.cards)
+        trick_to_beat = self.state.toBeat.cards
+
+        print(f"Two card tricks): {tricks}")
+        for trick in tricks:
+            if (is_trick_stronger(trick, trick_to_beat)):
+                return [*trick], ""
+
+
+        return self.tempPassMove()
+
+    def three_card_trick(self):
+        return self.tempPassMove()
+
+    def five_card_trick(self):
+        return self.tempPassMove()
 
     def tempPassMove(self):
         return [], ""
-
+    
+    @cards_to_strings
     def getAction(self, state: MatchState):
         action = []  # The cards you are playing for this trick
         myData = state.myData  # Communications from the previous iteration
-        
-        game = Game(state)
-        game.hand.cards = [Card(c) for c in state.myHand]
-        # print(game.hand.cards)
-        # return self.tempPassMove()
-        game.hand.cards = Hand.sort_by_strength(game.hand.cards)
-        print(game.hand.cards)
-        if (not state.toBeat):
-            return [str(game.hand.cards[0])], ""
-        
-        cardsToBeat = state.toBeat.cards
-        
-        if (len(cardsToBeat) > 1): return self.tempPassMove()
+        self.game = Game(state)
+        self.state = state
 
-        cardToBeat = Card(cardsToBeat[0])
-        # print("Card to beat: " + str(cardToBeat))
-        cardStrength = Card.strength(cardToBeat)
+        if (not state.toBeat or len(state.toBeat.cards) == 0): 
+            return self.first_move()
 
-        for card in game.hand.cards:
-            if (Card.strength(card) > cardStrength):
-                return [str(card)], ""
+        self.state.toBeat.cards = [Card(c) for c in self.state.toBeat.cards]
+        num_of_cards = len(state.toBeat.cards)
+
+        if num_of_cards == 1:
+            return self.one_card_trick()
+        elif num_of_cards == 2:
+            return self.two_card_trick()
+        elif num_of_cards == 3:
+            return self.three_card_trick()
+        else:
+            return self.five_card_trick()
         
         # TODO Write your algorithm logic here
 
         return action, myData
     
 
-# from mock import mock_match_state
-# algo = Algorithm()
-# action, myData = algo.getAction(state=mock_match_state)
-
-# print(action)
-# print(myData)

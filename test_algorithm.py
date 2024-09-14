@@ -1,5 +1,4 @@
-from algorithm import Card, Hand
-
+from out.algorithm import *
 
 class TestCard:
     def test_greater_than(self):
@@ -40,4 +39,84 @@ class TestHand:
         expected = [(a, b), (a, c), (a, d), (b, c), (b, d), (c, d)]
         two_card_tricks, _ = Hand.get_2_card_tricks([a, b, c, d])
         assert two_card_tricks == expected
+    
+    def test_start_of_game(self):
+        # Mock object creation with only myHand being relevant
+        mock_match_state = MatchState(
+            myPlayerNum=0,  # You can mock this as 0
+            players=[],  # Empty list for players
+            myHand=['KH', '3H', '3S', '5C', '5S', '6C', '6S', '7D', '7C', 'TS', 'JS', 'QC', '3D'],  # Example hand
+            toBeat=None,  # No need to define, set as None
+            matchHistory=[],  # Empty match history
+            myData=''  # Empty string for myData
+        )
+        algo = Algorithm()
+        action, myData = algo.getAction(state=mock_match_state)
+        assert action == ['3D', '3H']
+
+    def test_first_move_1_card_trick(self):
+        # Mock object creation with only myHand being relevant
+        mock_match_state = MatchState(
+            myPlayerNum=0,  # You can mock this as 0
+            players=[],  # Empty list for players
+            myHand=['3H', '4H', '5S', '6C'],
+            toBeat=None,  # No need to define, set as None
+            matchHistory=[],  # Empty match history
+            myData=''  # Empty string for myData
+        )
+        algo = Algorithm()
+        action, myData = algo.getAction(state=mock_match_state)
+        assert action == ['3H']
+
+    def test_first_move_2_card_trick(self):
+        # Mock object creation with only myHand being relevant
+        mock_match_state = MatchState(
+            myPlayerNum=0,  # You can mock this as 0
+            players=[],  # Empty list for players
+            myHand=['2S', '4H', '4S', '3C'],
+            toBeat=None,  # No need to define, set as None
+            matchHistory=[],  # Empty match history
+            myData=''  # Empty string for myData
+        )
+        algo = Algorithm()
+        action, myData = algo.getAction(state=mock_match_state)
+        assert action == ['4H', '4S']
+
+    def test_1_card_trick_strength(self):
+        mock_trick = Trick(
+            playerNum=1,  # Mock player number, for example player 1
+            cards=['QS'] # Example cards played in the trick
+        )
+
+        # Mock object creation with only myHand being relevant
+        mock_match_state = MatchState(
+            myPlayerNum=0,  # You can mock this as 0
+            players=[],  # Empty list for players
+            myHand=['3C', '3H', '3S', '5C', '5S', '6C', '6S', '7D', '7C', 'TS', 'JS', 'QC', 'KH'],  # Example hand
+            toBeat=mock_trick,  # No need to define, set as None
+            matchHistory=[],  # Empty match history
+            myData=''  # Empty string for myData
+        )
+        algo = Algorithm()
+        action, myData = algo.getAction(state=mock_match_state)
+        assert action == ['KH']
+
+    def test_2_card_trick_strength(self):
+        mock_trick = Trick(
+            playerNum=1,  # Mock player number, for example player 1
+            cards=['5D', '5H'] # Example cards played in the trick
+        )
+
+        # Mock object creation with only myHand being relevant
+        mock_match_state = MatchState(
+            myPlayerNum=0,  # You can mock this as 0
+            players=[],  # Empty list for players
+            myHand=['3C', '3H', '3S', '5C', '5S', '6C', '6S', '7D', '7C', 'TS', 'JS', 'QC', 'KH'],  # Example hand
+            toBeat=mock_trick,  # No need to define, set as None
+            matchHistory=[],  # Empty match history
+            myData=''  # Empty string for myData
+        )
+        algo = Algorithm()
+        action, myData = algo.getAction(state=mock_match_state)
+        assert action == ['5C', '5S']
 
