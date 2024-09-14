@@ -228,12 +228,19 @@ class Match:
         return deck
 
 class Game:
-    def __init__(self):
+    def __init__(self, state):
+        # reset the game state with the data object
         self.deck = Match.generate_deck()
         self.hand = Hand()
 
         # remove ur cards from the deck and each move keep track of which cards are left
-    pass
+    def updateDeck():
+        pass
+
+    def __str__():
+        # convert this to a data object we can send and receive back for each game
+        pass
+
 
 
 class Algorithm:
@@ -241,6 +248,12 @@ class Algorithm:
     def getAction(self, state: MatchState):
         action = []  # The cards you are playing for this trick
         myData = state.myData  # Communications from the previous iteration
+        
+        game = Game()
+        game.hand = state.myHand
+        game.updateDeck()
+
+
 
         # TODO Write your algorithm logic here
 
