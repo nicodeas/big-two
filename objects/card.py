@@ -54,9 +54,12 @@ class Card:
         elif Suit.strength(self.suit) < Suit.strength(other.suit):
             return True
         return False
+    
+    def __hash__(self) -> int:
+        return hash(f"{self.rank}{self.suit}")
 
     def __repr__(self) -> str:
         return f"{self.rank}{self.suit}"
     
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
         return f"{self.rank}{self.suit}"

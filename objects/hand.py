@@ -7,8 +7,8 @@ class Hand:
     THREE_CARD_STRENGTH_MULTIPLIER = 4
     STRAIGHT_STRENGTH_MULTIPLIER = 8
 
-    def __init__(self, cards: list[Card]) -> None:
-        self.cards = cards
+    def __init__(self, cards: list[Card] | list[str]) -> None:
+        self.cards = self.to_cards(cards)
 
     @staticmethod
     def sort_by_suit(cards: list[Card]) -> list[Card]:
@@ -21,7 +21,11 @@ class Hand:
     @staticmethod
     def sort_by_strength(cards: list[Card]) -> list[Card]:
         return sorted(cards, key=lambda x: Card.strength(x))
-
+    
+    @staticmethod
+    def to_cards(cards: list[Card] | list[str]) -> list[Card]:
+        return [Card(str(c)) for c in cards]
+    
     def get_hand(self) -> list[Card]:
         return self.cards
 

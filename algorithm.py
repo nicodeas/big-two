@@ -6,6 +6,7 @@ def cards_to_strings(func):
     def wrapper(*args, **kwargs):
         action, myData = func(*args, **kwargs)
         action = [str(card) for card in action]
+        myData = str(myData)
         return action, myData
     return wrapper
 
@@ -18,9 +19,9 @@ class Algorithm:
         tricks, _ = Hand.get_2_card_tricks(self.game.hand.cards)
         for trick in tricks:
             if Card('3D') in trick:
-                return [*trick], ""
+                return [*trick], self.game
         
-        return [Card('3D')], ""
+        return [Card('3D')], self.game
     
     def first_move(self):
         if Card('3D') in self.game.hand:
@@ -29,11 +30,11 @@ class Algorithm:
         tricks, _ = Hand.get_2_card_tricks(self.game.hand.cards)
         print(tricks)
         if (len(tricks)) > 0:
-            return [*tricks[0]], ""
+            return [*tricks[0]], self.game
         
         self.game.hand.cards = Hand.sort_by_strength(self.game.hand)
         print(f"Sorted deck (first move): {self.game.hand.cards}")
-        return [self.game.hand.cards[0]], ""
+        return [self.game.hand.cards[0]], self.game
     
     def one_card_trick(self):
         tricks = Hand.sort_by_strength(self.game.hand)
@@ -42,7 +43,7 @@ class Algorithm:
         print(f"Sorted deck (one card trick): {tricks}")
         for trick in tricks:
             if (is_trick_stronger([trick], trick_to_beat)):
-                return [trick], ""
+                return [trick], self.game
         
         return self.tempPassMove()
 
@@ -53,7 +54,7 @@ class Algorithm:
         print(f"Two card tricks): {tricks}")
         for trick in tricks:
             if (is_trick_stronger(trick, trick_to_beat)):
-                return [*trick], ""
+                return [*trick], self.game
 
 
         return self.tempPassMove()
@@ -65,19 +66,21 @@ class Algorithm:
         return self.tempPassMove()
 
     def tempPassMove(self):
-        return [], ""
+        return [], self.game
     
     @cards_to_strings
     def getAction(self, state: MatchState):
         action = []  # The cards you are playing for this trick
         myData = state.myData  # Communications from the previous iteration
-        self.game = Game(state)
+        
         self.state = state
+        self.game = Game(state)
+        self.game.update_remaining_deck()
 
         if (not state.toBeat or len(state.toBeat.cards) == 0): 
             return self.first_move()
-
-        self.state.toBeat.cards = [Card(c) for c in self.state.toBeat.cards]
+        
+        self.state.toBeat.cards = Hand.to_cards(self.state.toBeat.cards)
         num_of_cards = len(state.toBeat.cards)
 
         if num_of_cards == 1:

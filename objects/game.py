@@ -1,24 +1,39 @@
 from objects.hand import *
+from objects._classes import *
+import json
 
 # MERGE FROM HERE
 class Game:
-    def __init__(self, state):
+    def __init__(self, state: MatchState):
         # reset the game state with the data object
-        self.deck = self.generate_deck()
-        self.hand = Hand(cards=[Card(c) for c in state.myHand])
+        self.hand = Hand(state.myHand)
+        self.remaining_deck = self.generate_deck()
+        [self.remove_card(card) for card in self.hand]
+        self.rounds_played = state.matchHistory[-1].gameHistory if state.matchHistory  else []
+        # self.round = len(self.rounds_played)-1
 
     @staticmethod
     def generate_deck():
         deck = set()
         for r in Rank.ranks:
             for s in Suit.suits:
-                deck.add(r+s)
+                deck.add(Card(r+s))
         return deck
 
         # remove ur cards from the deck and each move keep track of which cards are left
-    def updateDeck():
-        pass
+    def update_remaining_deck(self):
+        # maybe keep track of the last round only and keep state updated by myData
+        for rounds in self.rounds_played:
+            for tricks in rounds:
+                for card in tricks.cards:
+                    self.remove_card(card)
 
-    def __str__():
+    def remove_card(self, card):
+        print(card)
+        self.remaining_deck.remove(Card(str(card)))
+
+    def __repr__(self):
         # convert this to a data object we can send and receive back for each game
-        pass
+        json_data = json.dumps([str(card) for card in self.remaining_deck])
+        return json_data
+    
