@@ -40,7 +40,7 @@ mock_match_state = MatchState(
     myHand=['KD', '3H', '5C', '5S', '6C', '6S', '7D', '7C', 'TS', 'JS', 'QC'],  # Example hand
     toBeat=None,  # No need to define, set as None
     matchHistory=matchHistory,  # Empty match history
-    myData=''  # Empty string for myData
+    myData='["AS", "AD", "7S", "QS", "TD", "4C", "JH", "3C", "AH", "3S", "2H", "JC", "TC", "9C", "JD", "KS", "6H", "5D", "4D", "4H", "5H", "9H", "2D", "AC", "QH", "8D", "KC", "TH", "8H", "2C", "8C", "6D", "8S", "9D", "7H", "QD", "9S"]'  # Empty string for myData
 )
 
 # # Now, you can access the myHand attribute of the mock object

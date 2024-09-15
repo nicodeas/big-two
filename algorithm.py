@@ -1,4 +1,5 @@
 from classes import *
+import json
 
 from objects.imports import *
 
@@ -28,7 +29,7 @@ class Algorithm:
             return self.start_of_game()
         
         tricks, _ = Hand.get_2_card_tricks(self.game.hand.cards)
-        print(tricks)
+        # print(tricks)
         if (len(tricks)) > 0:
             return [*tricks[0]], self.game
         
@@ -76,6 +77,7 @@ class Algorithm:
         self.state = state
         self.game = Game(state)
         self.game.update_remaining_deck()
+        print(f"Cards remaining: {self.game}")
 
         if (not state.toBeat or len(state.toBeat.cards) == 0): 
             return self.first_move()
