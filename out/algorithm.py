@@ -170,7 +170,25 @@ class Hand:
         # if 3 cards -> 1 combination
         # 4 cards -> 4C3 combinations = 4 (if 4 cards, u have a four of a kind)
         # https://docs.python.org/3/library/itertools.html#itertools.combinations
-        pass
+        cards.sort(key=lambda x: Card.strength(x))
+        tricks: list[tuple[Card, Card, Card]] = []
+        value = 0
+        n = len(cards)
+        for i in range(n):
+            for j in range(1, n - i):
+                for k in range(1, n - i - j):
+                    if (
+                        cards[i].rank == cards[i + j].rank
+                        and cards[i].rank == cards[i + j + k].rank
+                    ):
+                        tricks.append((cards[i], cards[i + j], cards[i + j + k]))
+                        value += (Card.strength(cards[i]) + Card.strength(cards[i + j]) + Card.strength(cards[i + j + k])
+                        )
+                    else:
+                        break
+
+        return tricks, value * Hand.THREE_CARD_STRENGTH_MULTIPLIER
+
 
     @staticmethod
     def get_straight_tricks(
@@ -229,11 +247,9 @@ class Game:
     def __init__(self, state: MatchState):
         # reset the game state with the data object
         self.hand = Hand(state.myHand)
-        if len(state.myData) == 0 or True:
-            self.remaining_deck = self.generate_deck()
-            [self.remove_card(card) for card in self.hand]
-        else:
-            self.remaining_deck = self.generate_deck_from_data(state.myData)
+        self.state = state
+        self.decode()
+        
         self.rounds_played = state.matchHistory[-1].gameHistory if state.matchHistory  else []
         # self.round = len(self.rounds_played)-1
 
@@ -245,9 +261,8 @@ class Game:
                 deck.add(Card(r+s))
         return deck
     
-    @staticmethod
-    def generate_deck_from_data(json_data):
-        card_data = json.loads(json_data)
+    def generate_deck_from_data(self):
+        card_data = self.state.myData['remaining_deck']
         deck = set()
         for card in card_data:
             deck.add(Card(card))
@@ -264,9 +279,23 @@ class Game:
     def remove_card(self, card):
         self.remaining_deck.discard(Card(str(card)))
 
+    def encode(self):
+        myData = {}
+        myData['remaining_deck'] = [str(card) for card in self.remaining_deck]
+        return myData
+
+    def decode(self):
+        if 'remaining_deck' in self.state.myData:
+            self.remaining_deck = self.generate_deck_from_data()
+        else:
+            self.remaining_deck = self.generate_deck()
+            [self.remove_card(card) for card in self.hand]
+            
+
     def __repr__(self):
         # convert this to a data object we can send and receive back for each game
-        json_data = json.dumps([str(card) for card in self.remaining_deck])
+        myData = self.encode()
+        json_data = json.dumps(myData)
         return json_data
     
 
@@ -278,14 +307,17 @@ class Match:
     def __init__(self):
         pass
 
-def is_one_card_trick_stronger(trick1, trick2):
+def is_one_card_trick_stronger(trick1: list[Card], trick2: list[Card]):
     return Card.strength(trick1[0]) > Card.strength(trick2[0])
 
-def is_two_card_trick_stronger(trick1, trick2):
+def is_two_card_trick_stronger(trick1: list[Card], trick2: list[Card]):
     trick1_strength = max(Card.strength(trick1[0]), Card.strength(trick1[1]))
     trick2_strength = max(Card.strength(trick2[0]), Card.strength(trick2[1]))
     
     return trick1_strength > trick2_strength
+
+def is_three_card_trick_stronger(trick1: list[Card], trick2: list[Card]):
+    return trick1[0] > trick2[0]
 
 def is_trick_stronger(trick1, trick2):
     size = len(trick2)
@@ -293,6 +325,8 @@ def is_trick_stronger(trick1, trick2):
         return is_one_card_trick_stronger(trick1, trick2)
     elif size == 2:
         return is_two_card_trick_stronger(trick1, trick2)
+    elif size == 3:
+        return is_three_card_trick_stronger(trick1, trick2)
 
     return False
 
@@ -306,8 +340,7 @@ def cards_to_strings(func):
         action, myData = func(*args, **kwargs)
         action = [str(card) for card in action]
         myData = str(myData)
-        print(f"send data: {len(myData)}")
-        print(f"send data: {myData}")
+        print(f"send data: {len(json.loads(myData)['remaining_deck'])}")
         return action, myData
     return wrapper
 
@@ -317,6 +350,11 @@ class Algorithm:
         self.state = None
 
     def start_of_game(self):
+        tricks, _ = Hand.get_3_card_tricks(self.game.hand.cards)
+        for trick in tricks:
+            if Card('3D') in trick:
+                return [*trick], self.game
+            
         tricks, _ = Hand.get_2_card_tricks(self.game.hand.cards)
         for trick in tricks:
             if Card('3D') in trick:
@@ -328,8 +366,11 @@ class Algorithm:
         if Card('3D') in self.game.hand:
             return self.start_of_game()
         
+        tricks, _ = Hand.get_3_card_tricks(self.game.hand.cards)
+        if (len(tricks)) > 0:
+            return [*tricks[0]], self.game
+
         tricks, _ = Hand.get_2_card_tricks(self.game.hand.cards)
-        # print(tricks)
         if (len(tricks)) > 0:
             return [*tricks[0]], self.game
         
@@ -352,15 +393,22 @@ class Algorithm:
         tricks, _ = Hand.get_2_card_tricks(self.game.hand.cards)
         trick_to_beat = self.state.toBeat.cards
 
-        print(f"Two card tricks): {tricks}")
+        print(f"(Two card tricks): {tricks}")
         for trick in tricks:
             if (is_trick_stronger(trick, trick_to_beat)):
                 return [*trick], self.game
 
-
         return self.tempPassMove()
 
     def three_card_trick(self):
+        tricks, _ = Hand.get_3_card_tricks(self.game.hand.cards)
+        trick_to_beat = self.state.toBeat.cards
+
+        print(f"(Three card tricks): {tricks}")
+        for trick in tricks:
+            if (is_trick_stronger(trick, trick_to_beat)):
+                return [*trick], self.game
+        
         return self.tempPassMove()
 
     def five_card_trick(self):
@@ -372,12 +420,15 @@ class Algorithm:
     @cards_to_strings
     def getAction(self, state: MatchState):
         action = []  # The cards you are playing for this trick
+        if not state.myData: state.myData = "{}"
+        state.myData = json.loads(state.myData)
         myData = state.myData  # Communications from the previous iteration
-        print(f"recv data: {len(state.myData)}")
-        print(f"recv data: {state.myData}")
-
-
+        
+        if 'remaining_deck' in myData:
+            print(f"recv data: {len(myData['remaining_deck'])}")
+        
         self.state = state
+
         self.game = Game(state)
         self.game.update_remaining_deck()
         print(f"Cards remaining: {self.game}")
@@ -389,13 +440,13 @@ class Algorithm:
         num_of_cards = len(state.toBeat.cards)
 
         if num_of_cards == 1:
-            return self.one_card_trick()
+            action, myData = self.one_card_trick()
         elif num_of_cards == 2:
-            return self.two_card_trick()
+            action, myData = self.two_card_trick()
         elif num_of_cards == 3:
-            return self.three_card_trick()
+            action, myData = self.three_card_trick()
         else:
-            return self.five_card_trick()
+            action, myData = self.five_card_trick()
         
         # TODO Write your algorithm logic here
 

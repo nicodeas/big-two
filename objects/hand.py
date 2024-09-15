@@ -57,7 +57,25 @@ class Hand:
         # if 3 cards -> 1 combination
         # 4 cards -> 4C3 combinations = 4 (if 4 cards, u have a four of a kind)
         # https://docs.python.org/3/library/itertools.html#itertools.combinations
-        pass
+        cards.sort(key=lambda x: Card.strength(x))
+        tricks: list[tuple[Card, Card, Card]] = []
+        value = 0
+        n = len(cards)
+        for i in range(n):
+            for j in range(1, n - i):
+                for k in range(1, n - i - j):
+                    if (
+                        cards[i].rank == cards[i + j].rank
+                        and cards[i].rank == cards[i + j + k].rank
+                    ):
+                        tricks.append((cards[i], cards[i + j], cards[i + j + k]))
+                        value += (Card.strength(cards[i]) + Card.strength(cards[i + j]) + Card.strength(cards[i + j + k])
+                        )
+                    else:
+                        break
+
+        return tricks, value * Hand.THREE_CARD_STRENGTH_MULTIPLIER
+
 
     @staticmethod
     def get_straight_tricks(

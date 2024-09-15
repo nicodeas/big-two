@@ -7,11 +7,9 @@ class Game:
     def __init__(self, state: MatchState):
         # reset the game state with the data object
         self.hand = Hand(state.myHand)
-        if len(state.myData) == 0 or True:
-            self.remaining_deck = self.generate_deck()
-            [self.remove_card(card) for card in self.hand]
-        else:
-            self.remaining_deck = self.generate_deck_from_data(state.myData)
+        self.state = state
+        self.decode()
+        
         self.rounds_played = state.matchHistory[-1].gameHistory if state.matchHistory  else []
         # self.round = len(self.rounds_played)-1
 
@@ -23,9 +21,8 @@ class Game:
                 deck.add(Card(r+s))
         return deck
     
-    @staticmethod
-    def generate_deck_from_data(json_data):
-        card_data = json.loads(json_data)
+    def generate_deck_from_data(self):
+        card_data = self.state.myData['remaining_deck']
         deck = set()
         for card in card_data:
             deck.add(Card(card))
@@ -42,8 +39,22 @@ class Game:
     def remove_card(self, card):
         self.remaining_deck.discard(Card(str(card)))
 
+    def encode(self):
+        myData = {}
+        myData['remaining_deck'] = [str(card) for card in self.remaining_deck]
+        return myData
+
+    def decode(self):
+        if 'remaining_deck' in self.state.myData:
+            self.remaining_deck = self.generate_deck_from_data()
+        else:
+            self.remaining_deck = self.generate_deck()
+            [self.remove_card(card) for card in self.hand]
+            
+
     def __repr__(self):
         # convert this to a data object we can send and receive back for each game
-        json_data = json.dumps([str(card) for card in self.remaining_deck])
+        myData = self.encode()
+        json_data = json.dumps(myData)
         return json_data
     

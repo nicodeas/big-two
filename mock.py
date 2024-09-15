@@ -38,11 +38,11 @@ mock_trick = Trick(
 mock_match_state = MatchState(
     myPlayerNum=1,  # You can mock this as 0
     players=players,  # Empty list for players
-    myHand=['KD', '3H', '5C', '5S', '6C', '6S', '7D', '7C', 'TS', 'JS', 'QC'],  # Example hand
+    myHand=['KD', '3H', '5C', '5S', '6C', '7S', '7D', '7C', 'TS', 'JS', 'QC'],  # Example hand
     toBeat=None,  # No need to define, set as None
     matchHistory=matchHistory,  # Empty match history
-    myData="",
-    # myData='["AS", "AD", "7S", "QS", "TD", "4C", "JH", "3C", "AH", "3S", "2H", "JC", "TC", "9C", "JD", "KS", "6H", "5D", "4D", "4H", "5H", "9H", "2D", "AC", "QH", "8D", "KC", "TH", "8H", "2C", "8C", "6D", "8S", "9D", "7H", "QD", "9S"]'  # Empty string for myData
+    # myData="",
+    myData='{"remaining_deck": ["QD", "2H", "4C", "7H", "JC", "KS", "2D", "JD", "4D", "2C", "8S", "9S", "KC", "6H", "QH", "5H", "3C", "3S", "AC", "AD", "AH", "TH", "AS", "TD", "8D", "TC", "8C", "8H", "6D", "7S", "9H", "QS", "5D", "9C", "JH", "4H", "9D"]}'  # Empty string for myData
 )
 
 # # Now, you can access the myHand attribute of the mock object
