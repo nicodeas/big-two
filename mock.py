@@ -16,7 +16,8 @@ trick8 = Trick(playerNum=3, cards=[])
 
 # Mock data for GameHistory (1 round with 3 tricks)
 round1 = [trick1, trick2, trick3, trick4, trick5, trick6, trick7, trick8]
-gameHistory = GameHistory(finished=True, winnerPlayerNum=0, gameHistory=[round1])
+# round1 = [trick1]
+gameHistory = GameHistory(finished=False, winnerPlayerNum=0, gameHistory=[round1])
 
 # Mock data for Player objects
 player0 = Player(points=0, handSize=11)
@@ -35,12 +36,13 @@ mock_trick = Trick(
 
 # Mock object creation with only myHand being relevant
 mock_match_state = MatchState(
-    myPlayerNum=0,  # You can mock this as 0
+    myPlayerNum=1,  # You can mock this as 0
     players=players,  # Empty list for players
     myHand=['KD', '3H', '5C', '5S', '6C', '6S', '7D', '7C', 'TS', 'JS', 'QC'],  # Example hand
     toBeat=None,  # No need to define, set as None
     matchHistory=matchHistory,  # Empty match history
-    myData='["AS", "AD", "7S", "QS", "TD", "4C", "JH", "3C", "AH", "3S", "2H", "JC", "TC", "9C", "JD", "KS", "6H", "5D", "4D", "4H", "5H", "9H", "2D", "AC", "QH", "8D", "KC", "TH", "8H", "2C", "8C", "6D", "8S", "9D", "7H", "QD", "9S"]'  # Empty string for myData
+    myData="",
+    # myData='["AS", "AD", "7S", "QS", "TD", "4C", "JH", "3C", "AH", "3S", "2H", "JC", "TC", "9C", "JD", "KS", "6H", "5D", "4D", "4H", "5H", "9H", "2D", "AC", "QH", "8D", "KC", "TH", "8H", "2C", "8C", "6D", "8S", "9D", "7H", "QD", "9S"]'  # Empty string for myData
 )
 
 # # Now, you can access the myHand attribute of the mock object

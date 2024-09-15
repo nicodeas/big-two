@@ -229,7 +229,7 @@ class Game:
     def __init__(self, state: MatchState):
         # reset the game state with the data object
         self.hand = Hand(state.myHand)
-        if not state.myData:
+        if len(state.myData) == 0 or True:
             self.remaining_deck = self.generate_deck()
             [self.remove_card(card) for card in self.hand]
         else:
@@ -306,6 +306,8 @@ def cards_to_strings(func):
         action, myData = func(*args, **kwargs)
         action = [str(card) for card in action]
         myData = str(myData)
+        print(f"send data: {len(myData)}")
+        print(f"send data: {myData}")
         return action, myData
     return wrapper
 
@@ -371,7 +373,10 @@ class Algorithm:
     def getAction(self, state: MatchState):
         action = []  # The cards you are playing for this trick
         myData = state.myData  # Communications from the previous iteration
-        
+        print(f"recv data: {len(state.myData)}")
+        print(f"recv data: {state.myData}")
+
+
         self.state = state
         self.game = Game(state)
         self.game.update_remaining_deck()

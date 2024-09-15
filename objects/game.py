@@ -7,7 +7,7 @@ class Game:
     def __init__(self, state: MatchState):
         # reset the game state with the data object
         self.hand = Hand(state.myHand)
-        if not state.myData:
+        if len(state.myData) == 0 or True:
             self.remaining_deck = self.generate_deck()
             [self.remove_card(card) for card in self.hand]
         else:

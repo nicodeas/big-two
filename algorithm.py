@@ -8,6 +8,8 @@ def cards_to_strings(func):
         action, myData = func(*args, **kwargs)
         action = [str(card) for card in action]
         myData = str(myData)
+        print(f"send data: {len(myData)}")
+        print(f"send data: {myData}")
         return action, myData
     return wrapper
 
@@ -73,7 +75,10 @@ class Algorithm:
     def getAction(self, state: MatchState):
         action = []  # The cards you are playing for this trick
         myData = state.myData  # Communications from the previous iteration
-        
+        print(f"recv data: {len(state.myData)}")
+        print(f"recv data: {state.myData}")
+
+
         self.state = state
         self.game = Game(state)
         self.game.update_remaining_deck()
