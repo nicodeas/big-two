@@ -1,4 +1,4 @@
-from algorithm import *
+from out.algorithm import *
 from mock import players, matchHistory
 
 class TestCard:

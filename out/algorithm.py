@@ -1,4 +1,5 @@
 from classes import *
+from itertools import combinations
 import json
 
 class Rank:
@@ -152,14 +153,13 @@ class Hand:
         # https://docs.python.org/3/library/itertools.html#itertools
         tricks: list[tuple[Card, Card]] = []
         value = 0
-        n = len(cards)
-        for i in range(n):
-            for j in range(1, n - i):
-                if cards[i].rank == cards[i + j].rank:
-                    tricks.append((cards[i], cards[i + j]))
-                    value += Card.strength(cards[i]) + Card.strength(cards[i + j])
-                else:
-                    break
+
+        # Generate all 3-card combinations
+        for combo in combinations(cards, 2):
+            if combo[0].rank == combo[1].rank:
+                tricks.append(combo)
+                value += sum(Card.strength(card) for card in combo)
+        
         return tricks, value * Hand.TWO_CARD_STRENGTH_MULTIPLIER
 
     @staticmethod
@@ -173,19 +173,12 @@ class Hand:
         cards.sort(key=lambda x: Card.strength(x))
         tricks: list[tuple[Card, Card, Card]] = []
         value = 0
-        n = len(cards)
-        for i in range(n):
-            for j in range(1, n - i):
-                for k in range(1, n - i - j):
-                    if (
-                        cards[i].rank == cards[i + j].rank
-                        and cards[i].rank == cards[i + j + k].rank
-                    ):
-                        tricks.append((cards[i], cards[i + j], cards[i + j + k]))
-                        value += (Card.strength(cards[i]) + Card.strength(cards[i + j]) + Card.strength(cards[i + j + k])
-                        )
-                    else:
-                        break
+        
+        # Generate all 3-card combinations
+        for combo in combinations(cards, 3):
+            if combo[0].rank == combo[1].rank == combo[2].rank:
+                tricks.append(combo)
+                value += sum(Card.strength(card) for card in combo)
 
         return tricks, value * Hand.THREE_CARD_STRENGTH_MULTIPLIER
 
