@@ -1,6 +1,7 @@
 from classes import *
 from itertools import combinations
 import json
+import math
 
 from objects.imports import *
 
@@ -9,7 +10,7 @@ def cards_to_strings(func):
         action, myData = func(*args, **kwargs)
         action = [str(card) for card in action]
         myData = str(myData)
-        print(f"send data: {len(json.loads(myData)['remaining_deck'])}")
+        # print(f"send data: {len(json.loads(myData)['remaining_deck'])}")
         return action, myData
     return wrapper
 
@@ -35,10 +36,6 @@ class Algorithm:
         if Card('3D') in self.game.hand:
             return self.start_of_game()
 
-        # TODO: one card trick algorithm        
-        # trick = one_card_trick(self.game)
-        # return trick, self.game
-        
         tricks, _ = Hand.get_3_card_tricks(self.game.hand.cards)
         if (len(tricks)) > 0:
             return [*tricks[0]], self.game
@@ -48,10 +45,13 @@ class Algorithm:
             return [*tricks[0]], self.game
         
         self.game.hand.cards = Hand.sort_by_strength(self.game.hand)
-        print(f"Sorted deck (first move): {self.game.hand.cards}")
+        # print(f"Sorted deck (first move): {self.game.hand.cards}")
         return [self.game.hand.cards[0]], self.game
     
     def one_card_trick(self):
+        trick = one_card_trick(self.game)
+        return trick, self.game
+
         tricks = Hand.sort_by_strength(self.game.hand)
         trick_to_beat = self.state.toBeat.cards
         
@@ -63,6 +63,9 @@ class Algorithm:
         return self.tempPassMove()
 
     def two_card_trick(self):
+        trick = two_card_trick(self.game)
+        return trick, self.game
+    
         tricks, _ = Hand.get_2_card_tricks(self.game.hand.cards)
         trick_to_beat = self.state.toBeat.cards
 
@@ -74,6 +77,8 @@ class Algorithm:
         return self.tempPassMove()
 
     def three_card_trick(self):
+        trick = three_card_trick(self.game)
+        return trick, self.game
         tricks, _ = Hand.get_3_card_tricks(self.game.hand.cards)
         trick_to_beat = self.state.toBeat.cards
 
@@ -95,21 +100,26 @@ class Algorithm:
         action = []  # The cards you are playing for this trick
         if not state.myData: state.myData = "{}"
         state.myData = json.loads(state.myData)
-        myData = state.myData  # Communications from the previous iteration
-        
-        if 'remaining_deck' in myData:
-            print(f"recv data: {len(myData['remaining_deck'])}")
-        
-        self.state = state
+        if 'remaining_deck' in state.myData:
+            print(f"recv data: {len(state.myData['remaining_deck'])}")
 
-        self.game = Game(state)
+        if (state.toBeat and len(state.toBeat.cards) > 0): 
+            state.toBeat.cards = Hand.to_cards(state.toBeat.cards)
+        
+        # NOTE: Modify state as needed before this
+
+        myData = state.myData  # Communications from the previous iteration
+        self.state = state
+        self.game = Game(self.state)
         self.game.update_remaining_deck()
+
         print(f"Cards remaining: {self.game}")
+        print(f"My hand:  {self.game.hand.cards}")
 
         if (not state.toBeat or len(state.toBeat.cards) == 0): 
             return self.first_move()
         
-        self.state.toBeat.cards = Hand.to_cards(self.state.toBeat.cards)
+        
         num_of_cards = len(state.toBeat.cards)
 
         if num_of_cards == 1:
