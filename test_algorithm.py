@@ -1,4 +1,4 @@
-from out.algorithm import *
+from algorithm import *
 from mock import players, matchHistory
 
 
@@ -74,6 +74,26 @@ class TestHand:
             [Card(r + s) for s in Suit.suits for r in Rank.ranks]
         )
         assert len(total_four_of_a_kind_tricks) == 624
+
+    def test_get_straight(self):
+        a = Card("3C")
+        b = Card("4C")
+        c = Card("5C")
+        d = Card("6D")
+        e = Card("TH")
+        f = Card("JD")
+        g = Card("QD")
+        h = Card("KD")
+        i = Card("AD")
+        j = Card("2D")
+
+        myHand=[a, b, c, d, e, f, g, h, i, j]  # Example hand
+
+        expected = [(e, f, g, h, i), (f, g, h, i, j)]
+        
+        straight_trick, _ = Hand.get_straight_tricks(myHand)
+        
+        assert straight_trick == expected
 
     def test_action_outputs_strings(self):
         # Mock object creation with only myHand being relevant
@@ -406,4 +426,6 @@ class TestAlgorithmThreeCard:
         algo = Algorithm()
         action, myData = algo.getAction(state=mock_match_state)
         assert action == []
+
+
 
