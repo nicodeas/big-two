@@ -73,7 +73,7 @@ class TestHand:
         total_four_of_a_kind_tricks, _ = Hand.get_four_of_a_kind_tricks(
             [Card(r + s) for s in Suit.suits for r in Rank.ranks]
         )
-        assert total_four_of_a_kind_tricks == 624
+        assert len(total_four_of_a_kind_tricks) == 624
 
     def test_action_outputs_strings(self):
         # Mock object creation with only myHand being relevant
