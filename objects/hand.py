@@ -99,8 +99,27 @@ class Hand:
     def get_four_of_a_kind_tricks(
         cards: list[Card],
     ) -> tuple[list[tuple[Card, Card, Card, Card, Card]], int]:
-        # how to figure out what card to throw away in this?
-        pass
+        cards.sort(key=lambda x: Card.strength(x))
+        tricks: list[tuple[Card, Card, Card]] = []
+        value = 0
+        # init sliding window of len 4
+        for i in range(len(cards) - 3):
+            if cards[i].rank == cards[i + 3].rank:
+                # TODO: idk if this is the fastest way to do it, are we required to copy each time?
+                four_of_a_kind_trick = cards[i : i + 4].copy()
+                # add the kicker
+                for j in range(len(cards)):
+                    if j < i or j >= i + 4:
+                        four_of_a_kind_trick.append(cards[j])
+                        four_of_a_kind_trick_and_extra = tuple(four_of_a_kind_trick)
+                        tricks.append(four_of_a_kind_trick_and_extra)
+                        # remove extra card
+                        four_of_a_kind_trick.pop()
+                        value += sum(
+                            Card.strength(card)
+                            for card in four_of_a_kind_trick_and_extra
+                        )
+        return tricks, value * 1
 
     @staticmethod
     def get_straight_flush_tricks(
