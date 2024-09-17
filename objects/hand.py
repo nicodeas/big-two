@@ -1,12 +1,16 @@
 from itertools import combinations
 from objects.card import *
 
+
 # MERGE FROM HERE
 class Hand:
     cards: list[Card] = None
     TWO_CARD_STRENGTH_MULTIPLIER = 2
     THREE_CARD_STRENGTH_MULTIPLIER = 4
     STRAIGHT_STRENGTH_MULTIPLIER = 8
+
+    # TODO: figure out multiplier
+    FOUR_OF_A_KIND_MULTIPLIER = 1
 
     def __init__(self, cards: list[Card] | list[str]) -> None:
         self.cards = self.to_cards(cards)
@@ -18,19 +22,19 @@ class Hand:
     @staticmethod
     def sort_by_rank(cards: list[Card]) -> list[Card]:
         return sorted(cards, key=lambda x: Rank.strength(x.rank))
-    
+
     @staticmethod
     def sort_by_strength(cards: list[Card]) -> list[Card]:
         return sorted(cards, key=lambda x: Card.strength(x))
-    
+
     @staticmethod
     def sort_by_suit_strength(cards: list[Card]) -> list[Card]:
         return sorted(cards, key=lambda x: Card.suit_strength(x))
-    
+
     @staticmethod
     def to_cards(cards: list[Card] | list[str]) -> list[Card]:
         return [Card(str(c)) for c in cards]
-    
+
     def get_hand(self) -> list[Card]:
         return self.cards
 
@@ -50,7 +54,7 @@ class Hand:
             if combo[0].rank == combo[1].rank:
                 tricks.append(combo)
                 value += sum(Card.strength(card) for card in combo)
-        
+
         return tricks, value * Hand.TWO_CARD_STRENGTH_MULTIPLIER
 
     @staticmethod
@@ -64,7 +68,7 @@ class Hand:
         cards.sort(key=lambda x: Card.strength(x))
         tricks: list[tuple[Card, Card, Card]] = []
         value = 0
-        
+
         # Generate all 3-card combinations
         for combo in combinations(cards, 3):
             if combo[0].rank == combo[1].rank == combo[2].rank:
@@ -72,7 +76,6 @@ class Hand:
                 value += sum(Card.strength(card) for card in combo)
 
         return tricks, value * Hand.THREE_CARD_STRENGTH_MULTIPLIER
-
 
     @staticmethod
     def get_straight_tricks(
@@ -145,3 +148,4 @@ class Hand:
 
     def __iter__(self) -> list[Card]:
         return iter(self.cards)
+
