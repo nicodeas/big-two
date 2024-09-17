@@ -42,7 +42,7 @@ def two_card_trick(state: Game) -> list[Card]:
     trick_to_beat = state.state.toBeat.cards
     valid_tricks = get_valid_tricks_two(state.hand.cards, trick_to_beat)
     if not valid_tricks: 
-        print("No valid cards")
+        print("No valid tricks")
         return []
 
     # Add algorithm below
@@ -77,7 +77,7 @@ def two_card_trick(state: Game) -> list[Card]:
                 return trick
             
             # Else, play a stronger than average card
-            if trick_probabilities[i] <= 0.4: 
+            if 0.2 <= trick_probabilities[i] <= 0.4: 
                 return trick
         
         # if neither then just play the lowest valid trick
