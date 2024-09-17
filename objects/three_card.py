@@ -77,7 +77,7 @@ def three_card_trick(state: Game) -> list[Card]:
                 return trick
             
             # Else, play a stronger than average card
-            if trick_probabilities[i] <= 0.4: 
+            if 0.2 <= trick_probabilities[i] <= 0.4: 
                 return trick
         
         # if neither then just play the lowest valid trick

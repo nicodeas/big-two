@@ -114,7 +114,7 @@ class Algorithm:
         self.game.update_remaining_deck()
 
         print(f"Cards remaining: {self.game}")
-        print(f"My hand:  {self.game.hand.cards}")
+        print(f"My hand:  {Hand.sort_by_strength(self.game.hand.cards)}")
 
         if (not state.toBeat or len(state.toBeat.cards) == 0): 
             return self.first_move()
