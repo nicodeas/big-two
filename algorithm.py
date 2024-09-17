@@ -77,6 +77,8 @@ class Algorithm:
         return self.tempPassMove()
 
     def three_card_trick(self):
+        trick = three_card_trick(self.game)
+        return trick, self.game
         tricks, _ = Hand.get_3_card_tricks(self.game.hand.cards)
         trick_to_beat = self.state.toBeat.cards
 
