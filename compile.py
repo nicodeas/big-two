@@ -9,7 +9,8 @@ files_to_merge = [
     'objects/game.py',
     'objects/match.py',
     'objects/compare.py',
-    'objects/one_card.py'
+    'objects/one_card.py',
+    'objects/two_card.py'
 ]
 
 # Define paths

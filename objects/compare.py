@@ -13,7 +13,7 @@ def is_two_card_trick_stronger(trick1: list[Card], trick2: list[Card]):
 def is_three_card_trick_stronger(trick1: list[Card], trick2: list[Card]):
     return trick1[0] > trick2[0]
 
-def is_trick_stronger(trick1, trick2):
+def is_trick_stronger(trick1: list[Card], trick2: list[Card]):
     size = len(trick2)
     if size == 1:
         return is_one_card_trick_stronger(trick1, trick2)

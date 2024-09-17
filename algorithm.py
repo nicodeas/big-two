@@ -10,7 +10,7 @@ def cards_to_strings(func):
         action, myData = func(*args, **kwargs)
         action = [str(card) for card in action]
         myData = str(myData)
-        print(f"send data: {len(json.loads(myData)['remaining_deck'])}")
+        # print(f"send data: {len(json.loads(myData)['remaining_deck'])}")
         return action, myData
     return wrapper
 
@@ -45,7 +45,7 @@ class Algorithm:
             return [*tricks[0]], self.game
         
         self.game.hand.cards = Hand.sort_by_strength(self.game.hand)
-        print(f"Sorted deck (first move): {self.game.hand.cards}")
+        # print(f"Sorted deck (first move): {self.game.hand.cards}")
         return [self.game.hand.cards[0]], self.game
     
     def one_card_trick(self):
@@ -63,6 +63,9 @@ class Algorithm:
         return self.tempPassMove()
 
     def two_card_trick(self):
+        trick = two_card_trick(self.game)
+        return trick, self.game
+    
         tricks, _ = Hand.get_2_card_tricks(self.game.hand.cards)
         trick_to_beat = self.state.toBeat.cards
 
@@ -109,6 +112,7 @@ class Algorithm:
         self.game.update_remaining_deck()
 
         print(f"Cards remaining: {self.game}")
+        print(f"My hand:  {self.game.hand.cards}")
 
         if (not state.toBeat or len(state.toBeat.cards) == 0): 
             return self.first_move()

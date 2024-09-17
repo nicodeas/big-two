@@ -3,8 +3,8 @@ from objects.compare import *
 import math
 
 # MERGE FROM HERE
-def get_valid_tricks_one(cards: list[Card], trick_to_beat: list[Card]) -> list[list[Card]]:
-    tricks = [[c] for c in Hand.sort_by_strength(cards)]
+def get_valid_tricks_two(cards: list[Card], trick_to_beat: list[Card]) -> list[list[Card]]:
+    tricks, _ = Hand.get_2_card_tricks(cards)
     valid_tricks = []
 
     for trick in tricks:
@@ -13,7 +13,7 @@ def get_valid_tricks_one(cards: list[Card], trick_to_beat: list[Card]) -> list[l
 
     return valid_tricks
 
-def calculate_aggression_one(remaining_cards: int) -> float:
+def calculate_aggression_two(remaining_cards: int) -> float:
     # Parameters
     max_cards = 39  # Starting number of cards (52 - 13) start of game
     min_cards = 4   # Lowest number of cards (1 for each player)
@@ -29,30 +29,31 @@ def calculate_aggression_one(remaining_cards: int) -> float:
     
     return aggression
 
-def calculate_trick_strength_one(trick: list[Card], possible_tricks: list[list[Card]]) -> float:
+def calculate_trick_strength_two(trick: list[Card], possible_tricks: list[list[Card]]) -> float:
     num_beaten = sum(1 for opponent_trick in possible_tricks if is_trick_stronger(opponent_trick, trick))
     probability_of_beaten = num_beaten / len(possible_tricks)
 
     return probability_of_beaten
 
 
-def one_card_trick(state: Game) -> list[Card]:
-    remaining_deck: list[Card] = list(state.remaining_deck)
-
+def two_card_trick(state: Game) -> list[Card]:
+    remaining_deck = list(state.remaining_deck)
+    # state.state.toBeat.cards = Hand.to_cards(state.state.toBeat.cards) # NOTE: should be done already
     trick_to_beat = state.state.toBeat.cards
-    valid_tricks = get_valid_tricks_one(state.hand.cards, trick_to_beat)
+    valid_tricks = get_valid_tricks_two(state.hand.cards, trick_to_beat)
     if not valid_tricks: 
         print("No valid cards")
         return []
 
     # Add algorithm below
-    aggression = calculate_aggression_one(len(remaining_deck))
+    aggression = calculate_aggression_two(len(remaining_deck))
     print(f"Aggression value is: {aggression} for {len(remaining_deck)} num of cards")
-    possible_tricks = [[card] for card in remaining_deck]
-    trick_probabilities = [calculate_trick_strength_one(trick, possible_tricks) for trick in valid_tricks]
+    possible_tricks, _ = Hand.get_2_card_tricks(remaining_deck)
+    # return []
+    trick_probabilities = [calculate_trick_strength_two(trick, possible_tricks) for trick in valid_tricks]
     print(valid_tricks)
     print(trick_probabilities)
-
+    
     if (aggression > 0.9):
             # if game is near end game then play your strongest card
         for i, trick in enumerate(valid_tricks):
