@@ -124,17 +124,17 @@ class TestHand:
     def test_1_card_trick_strength(self):
         mock_trick = Trick(
             playerNum=1,  # Mock player number, for example player 1
-            cards=['QS'] # Example cards played in the trick
+            cards=['QC'] # Example cards played in the trick
         )
 
         # Mock object creation with only myHand being relevant
         mock_match_state = MatchState(
             myPlayerNum=0,  # You can mock this as 0
             players=[],  # Empty list for players
-            myHand=['3C', '3H', '3S', '5C', '5S', '6C', '6S', '7D', '7C', 'TS', 'JS', 'QC', 'KH'],  # Example hand
+            myHand=['TS', 'JS', 'QS', 'KH'],  # Example hand
             toBeat=mock_trick,  # No need to define, set as None
             matchHistory=None,  # Empty match history
-            myData=''  # Empty string for myData
+            myData='{"remaining_deck": ["QD", "2S", "4C", "7H", "JC"]}'  # Empty string for myData
         )
         algo = Algorithm()
         action, myData = algo.getAction(state=mock_match_state)
@@ -195,3 +195,24 @@ class TestGameHistory:
         action, myData = algo.getAction(state=mock_match_state)
         card_data = json.loads(myData)['remaining_deck']
         assert len(card_data) == 37
+
+
+class TestAlgorithm:
+    def test_passing_early_game(self):
+        mock_trick = Trick(
+            playerNum=1,  # Mock player number, for example player 1
+            cards=['AH'] # Example cards played in the trick
+        )
+                
+        mock_match_state = MatchState(
+            myPlayerNum=1,  # You can mock this as 0
+            players=players,  # Empty list for players
+            # myHand=['KD', '3H', '5C', '5S', '6C', '7S', '7D', '7C', 'TS', 'JS', 'QC'],  # Example hand
+            myHand=['3C', '4C', '5C', '6H', '2H'],  # Example hand
+            toBeat=mock_trick,  # No need to define, set as None
+            matchHistory=matchHistory,  # Empty match history
+            myData='{"remaining_deck": ["QD", "2S", "4C", "7H", "JC", "KS", "2D", "JD", "4D", "2C", "8S", "9S", "KC", "6H", "QH", "5H", "3C", "3S", "AC", "AD", "TH", "AS", "TD", "8D", "TC", "8C", "8H", "6D", "7S", "9H"]}'  # Empty string for myData
+        )
+        algo = Algorithm()
+        action, myData = algo.getAction(state=mock_match_state)
+        assert action == []
