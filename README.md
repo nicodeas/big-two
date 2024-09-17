@@ -3,16 +3,28 @@ Originating in Hong Kong, Big Two is a strategic trick-taking card game that dem
 
 ## Files
 algorithm.py - the main entry point to the bot
+
 compile.py - compiles files to an output file
+
 objects/ - has all the separate classes and logic. Files inside this will be added to algorithm.py
+
 imports.py - contains the necessary file imports that algorithm.py will use
+
 match.py - holds info of the entire game, unused rn but we'll see
-game.py - the game state, myData object will be created from this probably updated (subject to change as needed)
+
+game.py - the game state, myData object will be created from this probably updated (subject to change as 
+needed)
+
 rank.py, suit.py - ranks and suits
+
 hand.py - used to get different tricks from a given hand or set of cards
+
 card.py - defines what a card is
+
 compare.py - has all the comparators to compare different tricks
+
 one_card.py - logic for what to do when we play a one card trick
+
 two_card.py - logic for what to do when we play a two card trick
 
 ## Important files
