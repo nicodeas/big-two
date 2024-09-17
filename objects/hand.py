@@ -24,6 +24,10 @@ class Hand:
         return sorted(cards, key=lambda x: Card.strength(x))
     
     @staticmethod
+    def sort_by_suit_strength(cards: list[Card]) -> list[Card]:
+        return sorted(cards, key=lambda x: Card.suit_strength(x))
+    
+    @staticmethod
     def to_cards(cards: list[Card] | list[str]) -> list[Card]:
         return [Card(str(c)) for c in cards]
     

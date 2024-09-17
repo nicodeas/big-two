@@ -35,6 +35,9 @@ class Algorithm:
         if Card('3D') in self.game.hand:
             return self.start_of_game()
         
+        trick = one_card_trick(self.game)
+        return trick, self.game
+        
         tricks, _ = Hand.get_3_card_tricks(self.game.hand.cards)
         if (len(tricks)) > 0:
             return [*tricks[0]], self.game

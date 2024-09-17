@@ -35,4 +35,4 @@ class Rank:
         }
         # 4x as rank more important than suite
         # maps each card from 1-52 when combined with suit
-        return 4 * strength[rank]
+        return strength[rank]
