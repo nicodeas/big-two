@@ -51,6 +51,30 @@ class TestHand:
         three_card_tricks, _ = Hand.get_3_card_tricks([a, b, c, d])
         assert three_card_tricks == expected
 
+    def test_get_four_of_a_kind_tricks(self):
+        a = Card("2D")
+        b = Card("2C")
+        c = Card("2H")
+        d = Card("2S")
+
+        # additional unrelated cards
+        e = Card("3D")
+        f = Card("3C")
+        g = Card("TD")
+        h = Card("JC")
+
+        hand = [a, b, c, d, e, f, g, h]
+        expected = [(a, b, c, d, e), (a, b, c, d, f), (a, b, c, d, g), (a, b, c, d, h)]
+
+        four_of_a_kind_tricks, _ = Hand.get_four_of_a_kind_tricks(hand)
+        assert four_of_a_kind_tricks == expected
+
+        # 13 suits, 48 possible additional cards, 13 * 48 = 624
+        total_four_of_a_kind_tricks, _ = Hand.get_four_of_a_kind_tricks(
+            [Card(r + s) for s in Suit.suits for r in Rank.ranks]
+        )
+        assert total_four_of_a_kind_tricks == 624
+
     def test_action_outputs_strings(self):
         # Mock object creation with only myHand being relevant
         mock_match_state = MatchState(
