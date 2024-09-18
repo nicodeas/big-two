@@ -121,7 +121,7 @@ class Hand:
                         )
 
                     templ += 1
-
+                cur_trick[-1] = cards[l]
                 cur_trick = cur_trick[1:]
             l+=1
         

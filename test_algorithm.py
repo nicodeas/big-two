@@ -80,17 +80,19 @@ class TestHand:
         b = Card("4C")
         c = Card("5C")
         d = Card("6D")
-        e = Card("TH")
-        f = Card("JD")
-        g = Card("QD")
-        h = Card("KD")
-        i = Card("AD")
-        j = Card("2C")
-        k = Card("2S")
+        e = Card("7D")
+        f = Card("7C")
+        g = Card("7H")
+        h = Card("8D")
+        i = Card("TD")
+        j = Card("JC")
+        k = Card("QS")
+        l = Card("KS")
+        m = Card("AS")
 
-        myHand=[a, b, c, d, e, f, g, h, i, j, k]  # Example hand
+        myHand=[a, b, c, d, e, f, g, h, i, j, k, l, m]  # Example hand
 
-        expected = [(e, f, g, h, i), (f, g, h, i, j), (f, g, h, i, k)]
+        expected = [(a, b, c, d, e), (a, b, c, d, f), (a, b, c, d, g), (b, c, d, e, h), (i, j, k, l, m)]
         
         straight_trick, _ = Hand.get_straight_tricks(myHand)
         
