@@ -11,6 +11,7 @@ class Hand:
 
     # TODO: figure out multiplier
     FOUR_OF_A_KIND_MULTIPLIER = 1
+    FLUSH_STRENGTH_MULTIPLIER = 1
 
     def __init__(self, cards: list[Card] | list[str]) -> None:
         self.cards = self.to_cards(cards)
@@ -44,12 +45,8 @@ class Hand:
     @staticmethod
     def get_2_card_tricks(cards: list[Card]) -> tuple[list[tuple[Card, Card]], int]:
         cards.sort(key=lambda x: Card.strength(x))
-        # TODO: maybe this has a tools that simplify this
-        # https://docs.python.org/3/library/itertools.html#itertools
         tricks: list[tuple[Card, Card]] = []
         value = 0
-
-        # Generate all 3-card combinations
         for combo in combinations(cards, 2):
             if combo[0].rank == combo[1].rank:
                 tricks.append(combo)
@@ -61,10 +58,6 @@ class Hand:
     def get_3_card_tricks(
         cards: list[Card],
     ) -> tuple[list[tuple[Card, Card, Card]], int]:
-        # count numer of cards per rank
-        # if 3 cards -> 1 combination
-        # 4 cards -> 4C3 combinations = 4 (if 4 cards, u have a four of a kind)
-        # https://docs.python.org/3/library/itertools.html#itertools.combinations
         cards.sort(key=lambda x: Card.strength(x))
         tricks: list[tuple[Card, Card, Card]] = []
         value = 0
@@ -88,8 +81,34 @@ class Hand:
     def get_flush_tricks(
         cards: list[Card],
     ) -> tuple[list[tuple[Card, Card, Card, Card, Card]], int]:
-        # TODO: easy
-        pass
+
+        if len(cards) < 5:
+            return [], 0
+
+        tricks: list[tuple[Card, Card, Card, Card, Card]] = []
+        value = 0
+
+        d: list[Card] = []
+        c: list[Card] = []
+        h: list[Card] = []
+        s: list[Card] = []
+
+        for card in cards:
+            if card.suit == Suit.D:
+                d.append(card)
+            elif card.suit == Suit.C:
+                c.append(card)
+            elif card.suit == Suit.H:
+                h.append(card)
+            else:
+                s.append(card)
+
+        for suited_cards in [d, c, h, s]:
+            for combo in combinations(suited_cards, 5):
+                tricks.append(combo)
+                value += sum(Card.strength(card) for card in combo)
+
+        return tricks, value * Hand.FLUSH_STRENGTH_MULTIPLIER
 
     @staticmethod
     def get_full_house_tricks(
@@ -148,4 +167,3 @@ class Hand:
 
     def __iter__(self) -> list[Card]:
         return iter(self.cards)
-

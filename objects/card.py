@@ -1,6 +1,7 @@
 from objects.rank import *
 from objects.suit import *
 
+
 # MERGE FROM HERE
 class Card:
     rank: str
@@ -29,11 +30,11 @@ class Card:
     @staticmethod
     def strength(card):
         assert isinstance(card, Card)
-        return (Rank.strength(card.rank)-1)*4 + Suit.strength(card.suit)-1
-    
+        return (Rank.strength(card.rank) - 1) * 4 + Suit.strength(card.suit) - 1
+
     def suit_strength(card):
         assert isinstance(card, Card)
-        return (Rank.strength(card.rank))-1 + (Suit.strength(card.suit)-1)*13
+        return (Rank.strength(card.rank)) - 1 + (Suit.strength(card.suit) - 1) * 13
 
     def __eq__(self, other) -> bool:
         assert isinstance(other, Card)
@@ -58,12 +59,13 @@ class Card:
         elif Suit.strength(self.suit) < Suit.strength(other.suit):
             return True
         return False
-    
+
     def __hash__(self) -> int:
         return hash(f"{self.rank}{self.suit}")
 
     def __repr__(self) -> str:
         return f"{self.rank}{self.suit}"
-    
+
     def __str__(self) -> str:
         return f"{self.rank}{self.suit}"
+
