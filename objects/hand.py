@@ -244,15 +244,6 @@ class Hand:
     def get_5_card_tricks(
         cards: list[Card],
     ) -> tuple[list[tuple[Card, Card, Card, Card, Card]], int]:
-        # maybe return as a dictionary with keys 1, 2, 3, 4, 5 for relative strength of 5 card tricks
-        # might make it easier to compare against
-
-        # TODO: weakest(top) to strongest (bottom)
-        # get_straight_tricks
-        # get_flush_tricks
-        # get_full_house_tricks
-        # get_four_of_a_kind_tricks
-        # get_straight_flush_tricks
 
         tricks = {
             0: Hand.get_straight_tricks(cards),
@@ -262,20 +253,18 @@ class Hand:
             4: Hand.get_straight_flush_tricks(cards),
         }
 
+        return tricks
+
     @staticmethod
     def get_5_card_trick_type(
         cards: list[Card],
     ) -> int:
         type_of_trick = None
-        # get_straight_tricks
+        
         type_of_trick = 0 if len(Hand.get_straight_tricks(cards)[0]) > 0 else type_of_trick
-        # get_flush_tricks
         type_of_trick = 1 if len(Hand.get_flush_tricks(cards)[0]) > 0 else type_of_trick
-        # get_full_house_tricks
         type_of_trick = 2 if len(Hand.get_full_house_tricks(cards)[0]) > 0 else type_of_trick
-        # get_four_of_a_kind_tricks
         type_of_trick = 3 if len(Hand.get_four_of_a_kind_tricks(cards)[0]) > 0 else type_of_trick
-        # get_straight_flush_tricks
         type_of_trick = 4 if len(Hand.get_straight_flush_tricks(cards)[0]) > 0 else type_of_trick
 
         if type_of_trick is None:
