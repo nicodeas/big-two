@@ -115,6 +115,8 @@ class Hand:
     def get_full_house_tricks(
         cards: list[Card],
     ) -> tuple[list[tuple[Card, Card, Card, Card, Card]], int]:
+        if len(cards) < 5:
+            return [], 0
         two_card_tricks, _ = Hand.get_2_card_tricks(cards)
         three_card_tricks, _ = Hand.get_3_card_tricks(cards)
 
