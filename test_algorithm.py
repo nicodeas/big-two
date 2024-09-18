@@ -156,6 +156,32 @@ class TestHand:
         total_full_house_tricks, _ = Hand.get_full_house_tricks(deck)
         assert len(total_full_house_tricks) == 3744
 
+    def test_type_of_trick(self):
+        # straight
+        hand1 = [Card('3S'), Card('4H'), Card('5D'), Card('6C'), Card('7S')]
+        assert Hand.get_5_card_trick_type(hand1) == 0
+        
+        # flush
+        hand2 = [Card('2H'), Card('5H'), Card('7H'), Card('9H'), Card('KH')]
+        assert Hand.get_5_card_trick_type(hand2) == 1
+        
+        # full house
+        hand3 = [Card('4S'), Card('4D'), Card('4C'), Card('7H'), Card('7D')]
+        assert Hand.get_5_card_trick_type(hand3) == 2
+        
+        # four of a kind
+        hand4 = [Card('9S'), Card('9D'), Card('9H'), Card('9C'), Card('KC')]
+        assert Hand.get_5_card_trick_type(hand4) == 3
+        
+        # straight flush
+        hand5 = [Card('3D'), Card('4D'), Card('5D'), Card('6D'), Card('7D')]
+        assert Hand.get_5_card_trick_type(hand5) == 4
+        
+        # straight flush > straight
+        hand6 = [Card('5C'), Card('6C'), Card('7C'), Card('8C'), Card('9C')]        
+        assert Hand.get_5_card_trick_type(hand6) == 4
+
+
     def test_action_outputs_strings(self):
         # Mock object creation with only myHand being relevant
         mock_match_state = MatchState(
