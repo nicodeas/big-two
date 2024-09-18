@@ -1,5 +1,5 @@
 from algorithm import *
-from mock import mock_match_state, matchHistory, players
+# from mock import mock_match_state, matchHistory, players
 
 # mock_trick = Trick(
 #     playerNum=1,  # Mock player number, for example player 1
@@ -21,37 +21,31 @@ from mock import mock_match_state, matchHistory, players
 # assert action == []
 
 
-# from objects.imports import *
-# if __name__ == "__main__":
-#     one_card_trick(algo.game)
+# # from objects.imports import *
+# # if __name__ == "__main__":
+# #     one_card_trick(algo.game)
 
 
-def calculate_aggression(remaining_cards: int) -> float:
-    # Parameters
-    max_cards = 39  # Starting number of cards (52 - 13) start of game
-    min_cards = 4   # Lowest number of cards (1 for each player)
+# def calculate_aggression(remaining_cards: int) -> float:
+#     # Parameters
+#     max_cards = 39  # Starting number of cards (52 - 13) start of game
+#     min_cards = 4   # Lowest number of cards (1 for each player)
     
-    # Normalize the number of remaining cards to a range from 0 to 1
-    normalized_cards = (max_cards - remaining_cards) / (max_cards - min_cards)
-    # Parameters for the sigmoid function
-    scaling_factor = 0.05  # Scaling factor to control the growth
-    growth_rate = 6.0  # Rate of growth
+#     # Normalize the number of remaining cards to a range from 0 to 1
+#     normalized_cards = (max_cards - remaining_cards) / (max_cards - min_cards)
+#     # Parameters for the sigmoid function
+#     scaling_factor = 0.05  # Scaling factor to control the growth
+#     growth_rate = 6.0  # Rate of growth
     
-    # Calculate sigmoid function
-    aggression = min(scaling_factor * (math.exp(growth_rate * normalized_cards) - 1), 1)
+#     # Calculate sigmoid function
+#     aggression = min(scaling_factor * (math.exp(growth_rate * normalized_cards) - 1), 1)
     
-    return aggression
+#     return aggression
 
 
 # print(calculate_aggression(29))
+hand1 = [Card('3S'), Card('4H'), Card('5D'), Card('6C'), Card('7S')]
 
+tricks, _ = Hand.get_straight_tricks(hand1)
 
-myHand= ["3C", "4H", "5C", "6D", "TH", "JD", "QD", "KD", "AD", "2D"]  # Example hand
-
-print(type(myHand))
-
-expected = [("TH", "JD", "QD", "KD", "AD"), ("JD", "QD", "KD", "AD", "2D")]
-straight_trick, _ = Hand.get_straight_tricks(Hand.to_cards(myHand))
-
-assert straight_trick == expected
-
+print(tricks)

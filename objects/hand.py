@@ -270,13 +270,10 @@ class Hand:
         pass
 
     @staticmethod
-    def get_type_of_5_card_tricks(
+    def get_5_card_trick_type(
         cards: list[Card],
     ) -> int:
-        # maybe return as a dictionary with keys 1, 2, 3, 4, 5 for relative strength of 5 card tricks
-        # might make it easier to compare against
         type_of_trick = None
-        # TODO: weakest(top) to strongest (bottom)
         # get_straight_tricks
         type_of_trick = 0 if len(Hand.get_straight_tricks(cards)[0]) > 0 else None
         # get_flush_tricks
