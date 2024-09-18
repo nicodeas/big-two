@@ -85,11 +85,12 @@ class TestHand:
         g = Card("QD")
         h = Card("KD")
         i = Card("AD")
-        j = Card("2S")
+        j = Card("2C")
+        k = Card("2S")
 
-        myHand=[a, b, c, d, e, f, g, h, i, j]  # Example hand
+        myHand=[a, b, c, d, e, f, g, h, i, j, k]  # Example hand
 
-        expected = [(e, f, g, h, i), (f, g, h, i, j)]
+        expected = [(e, f, g, h, i), (f, g, h, i, j), (f, g, h, i, k)]
         
         straight_trick, _ = Hand.get_straight_tricks(myHand)
         
@@ -128,6 +129,12 @@ class TestHand:
         flush_trick, _ = Hand.get_flush_tricks(myHand)
         
         assert flush_trick == expected
+
+        total_flush_tricks, _ = Hand.get_flush_tricks(
+            [Card(r + s) for s in Suit.suits for r in Rank.ranks]
+        )
+        # 23456 is not a valid straight
+        assert len(total_flush_tricks) == 36
 
     def test_action_outputs_strings(self):
         # Mock object creation with only myHand being relevant
