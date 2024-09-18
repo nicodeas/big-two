@@ -20,6 +20,8 @@ class Algorithm:
         self.state = None
 
     def start_of_game(self):
+        # TODO: have start of game with 5 card trick
+        
         tricks, _ = Hand.get_3_card_tricks(self.game.hand.cards)
         for trick in tricks:
             if Card('3D') in trick:
@@ -35,65 +37,45 @@ class Algorithm:
     def first_move(self):
         if Card('3D') in self.game.hand:
             return self.start_of_game()
-
-        tricks, _ = Hand.get_3_card_tricks(self.game.hand.cards)
-        if (len(tricks)) > 0:
-            return [*tricks[0]], self.game
-
-        tricks, _ = Hand.get_2_card_tricks(self.game.hand.cards)
-        if (len(tricks)) > 0:
-            return [*tricks[0]], self.game
+        trick_sizes = [5, 3, 2, 1]
+        for trick_size in trick_sizes:
+            action, myData = self.play_a_move(trick_size)
+            if action:
+                return action, myData
         
-        self.game.hand.cards = Hand.sort_by_strength(self.game.hand)
-        # print(f"Sorted deck (first move): {self.game.hand.cards}")
-        return [self.game.hand.cards[0]], self.game
+        return self.tempPassMove
     
     def one_card_trick(self):
         trick = one_card_trick(self.game)
         return trick, self.game
 
-        tricks = Hand.sort_by_strength(self.game.hand)
-        trick_to_beat = self.state.toBeat.cards
-        
-        print(f"Sorted deck (one card trick): {tricks}")
-        for trick in tricks:
-            if (is_trick_stronger([trick], trick_to_beat)):
-                return [trick], self.game
-        
-        return self.tempPassMove()
-
     def two_card_trick(self):
         trick = two_card_trick(self.game)
         return trick, self.game
-    
-        tricks, _ = Hand.get_2_card_tricks(self.game.hand.cards)
-        trick_to_beat = self.state.toBeat.cards
-
-        print(f"(Two card tricks): {tricks}")
-        for trick in tricks:
-            if (is_trick_stronger(trick, trick_to_beat)):
-                return [*trick], self.game
-
-        return self.tempPassMove()
 
     def three_card_trick(self):
         trick = three_card_trick(self.game)
         return trick, self.game
-        tricks, _ = Hand.get_3_card_tricks(self.game.hand.cards)
-        trick_to_beat = self.state.toBeat.cards
-
-        print(f"(Three card tricks): {tricks}")
-        for trick in tricks:
-            if (is_trick_stronger(trick, trick_to_beat)):
-                return [*trick], self.game
-        
-        return self.tempPassMove()
 
     def five_card_trick(self):
-        return self.tempPassMove()
+        trick = five_card_trick(self.game)
+        return trick, self.game
 
     def tempPassMove(self):
         return [], self.game
+    
+    def play_a_move(self, trick_size: int):
+        if trick_size == 1:
+            action, myData = self.one_card_trick()
+        elif trick_size == 2:
+            action, myData = self.two_card_trick()
+        elif trick_size == 3:
+            action, myData = self.three_card_trick()
+        else:
+            action, myData = self.five_card_trick()
+
+        return action, myData
+
     
     @cards_to_strings
     def getAction(self, state: MatchState):
@@ -120,16 +102,8 @@ class Algorithm:
             return self.first_move()
         
         
-        num_of_cards = len(state.toBeat.cards)
-
-        if num_of_cards == 1:
-            action, myData = self.one_card_trick()
-        elif num_of_cards == 2:
-            action, myData = self.two_card_trick()
-        elif num_of_cards == 3:
-            action, myData = self.three_card_trick()
-        else:
-            action, myData = self.five_card_trick()
+        trick_size = len(state.toBeat.cards)
+        action, myData = self.play_a_move(trick_size)
         
         # TODO Write your algorithm logic here
 
