@@ -544,3 +544,56 @@ class TestAlgorithmThreeCard:
         algo = Algorithm()
         action, myData = algo.getAction(state=mock_match_state)
         assert action == []
+
+class TestAlgorithmFiveCard:
+    def test_play_straight_first_move(self):
+        mock_match_state = MatchState(
+            myPlayerNum=1,  # You can mock this as 0
+            players=players,  # Empty list for players
+            # myHand=['KD', '3H', '5C', '5S', '6C', '7S', '7D', '7C', 'TS', 'JS', 'QC'],  # Example hand
+            myHand=["3C", "4C", "5C", "6S", "7S"],  # Example hand
+            toBeat=None,  # No need to define, set as None
+            matchHistory=matchHistory,  # Empty match history
+            myData='',  # Empty string for myData
+        )
+        algo = Algorithm()
+        action, myData = algo.getAction(state=mock_match_state)
+        assert action == ["3C", "4C", "5C", "6S", "7S"]
+
+    def test_play_stronger_straight(self):
+        mock_trick = Trick(
+            playerNum=1,  # Mock player number, for example player 1
+            cards=["3S", "4S", "5S", "6D", "7D"],  # Example cards played in the trick
+        )
+
+        mock_match_state = MatchState(
+            myPlayerNum=1,  # You can mock this as 0
+            players=players,  # Empty list for players
+            # myHand=['KD', '3H', '5C', '5S', '6C', '7S', '7D', '7C', 'TS', 'JS', 'QC'],  # Example hand
+            myHand=["3C", "4C", "5C", "6S", "7S"],  # Example hand
+            toBeat=mock_trick,  # No need to define, set as None
+            matchHistory=matchHistory,  # Empty match history
+            myData='',  # Empty string for myData
+        )
+        algo = Algorithm()
+        action, myData = algo.getAction(state=mock_match_state)
+        assert action == ["3C", "4C", "5C", "6S", "7S"]
+
+    def test_play_stronger_5_card_trick(self):
+        mock_trick = Trick(
+            playerNum=1,  # Mock player number, for example player 1
+            cards=["3S", "4S", "5S", "6S", "8S"],  # Example cards played in the trick
+        )
+
+        mock_match_state = MatchState(
+            myPlayerNum=1,  # You can mock this as 0
+            players=players,  # Empty list for players
+            # myHand=['KD', '3H', '5C', '5S', '6C', '7S', '7D', '7C', 'TS', 'JS', 'QC'],  # Example hand
+            myHand=["4C", "4S", "4D", "7D", "7S"],  # Example hand
+            toBeat=mock_trick,  # No need to define, set as None
+            matchHistory=matchHistory,  # Empty match history
+            myData='',  # Empty string for myData
+        )
+        algo = Algorithm()
+        action, myData = algo.getAction(state=mock_match_state)
+        assert action == ["4D", "4C", "4S", "7D", "7S"]

@@ -244,7 +244,6 @@ class Hand:
     def get_5_card_tricks(
         cards: list[Card],
     ) -> tuple[list[tuple[Card, Card, Card, Card, Card]], int]:
-
         tricks = {
             0: Hand.get_straight_tricks(cards),
             1: Hand.get_flush_tricks(cards),
@@ -252,8 +251,9 @@ class Hand:
             3: Hand.get_four_of_a_kind_tricks(cards),
             4: Hand.get_straight_flush_tricks(cards),
         }
+        value = 0
 
-        return tricks
+        return tricks, value
 
     @staticmethod
     def get_5_card_trick_type(
