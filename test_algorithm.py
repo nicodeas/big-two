@@ -109,6 +109,26 @@ class TestHand:
         
         assert straight_trick == expected
 
+    def test_get_flush(self):
+        a = Card("3C")
+        b = Card("4C")
+        c = Card("5C")
+        d = Card("6D")
+        e = Card("TH")
+        f = Card("JD")
+        g = Card("QD")
+        h = Card("KD")
+        i = Card("AD")
+        j = Card("2D")
+
+        myHand=[a, b, c, d, e, f, g, h, i, j]  # Example hand
+
+        expected = [(f, g, h, i, j)]
+        
+        flush_trick, _ = Hand.get_flush_tricks(myHand)
+        
+        assert flush_trick == expected
+
     def test_action_outputs_strings(self):
         # Mock object creation with only myHand being relevant
         mock_match_state = MatchState(
