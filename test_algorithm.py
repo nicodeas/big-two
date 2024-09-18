@@ -1,3 +1,4 @@
+import random
 from out.algorithm import *
 from mock import players, matchHistory
 
@@ -81,6 +82,11 @@ class TestHand:
             [Card(r + s) for s in Suit.suits for r in Rank.ranks]
         )
         assert len(total_four_of_a_kind_tricks) == 624
+
+    def test_get_flush_tricks(self):
+        deck = TestHand.random_deck()
+        total_flush_tricks, _ = Hand.get_flush_tricks(deck)
+        assert len(total_flush_tricks) == 5148
 
     def test_action_outputs_strings(self):
         # Mock object creation with only myHand being relevant
@@ -413,4 +419,3 @@ class TestAlgorithmThreeCard:
         algo = Algorithm()
         action, myData = algo.getAction(state=mock_match_state)
         assert action == []
-
