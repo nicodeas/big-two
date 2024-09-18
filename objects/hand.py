@@ -88,8 +88,34 @@ class Hand:
     def get_flush_tricks(
         cards: list[Card],
     ) -> tuple[list[tuple[Card, Card, Card, Card, Card]], int]:
-        # TODO: easy
-        pass
+
+        if len(cards) < 5:
+            return [], 0
+
+        tricks: list[tuple[Card, Card, Card, Card, Card]] = []
+        value = 0
+
+        d: list[Card] = []
+        c: list[Card] = []
+        h: list[Card] = []
+        s: list[Card] = []
+
+        for card in cards:
+            if card.suit == Suit.D:
+                d.append(card)
+            elif card.suit == Suit.C:
+                c.append(card)
+            elif card.suit == Suit.H:
+                h.append(card)
+            else:
+                s.append(card)
+
+        for suited_cards in [d, c, h, s]:
+            for combo in combinations(suited_cards, 5):
+                tricks.append(combo)
+                value += sum(Card.strength(card) for card in combo)
+
+        return tricks, value * Hand.FLUSH_STRENGTH_MULTIPLIER
 
     @staticmethod
     def get_full_house_tricks(
