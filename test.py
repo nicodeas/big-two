@@ -1,24 +1,24 @@
 from algorithm import *
 from mock import mock_match_state, matchHistory, players
 
-mock_trick = Trick(
-    playerNum=1,  # Mock player number, for example player 1
-    cards=['4D', '4S'] # Example cards played in the trick
-)
+# mock_trick = Trick(
+#     playerNum=1,  # Mock player number, for example player 1
+#     cards=['4D', '4S'] # Example cards played in the trick
+# )
         
-mock_match_state = MatchState(
-    myPlayerNum=1,  # You can mock this as 0
-    players=players,  # Empty list for players
-    # myHand=['KD', '3H', '5C', '5S', '6C', '7S', '7D', '7C', 'TS', 'JS', 'QC'],  # Example hand
-    myHand=['3C', '4C', '5C', '2D', '2H'],  # Example hand
-    toBeat=mock_trick,  # No need to define, set as None
-    matchHistory=matchHistory,  # Empty match history
-    myData='{"remaining_deck": ["QD", "JH", "2S", "7H", "JC", "KS", "2D", "JD", "4D", "2C", "8S", "9S", "KC", "6H", "QH", "5H", "3C", "3S", "AC", "AD", "TH", "AS", "TD", "8D", "TC", "8C", "8H", "6D", "7S", "9H"]}'  # Empty string for myData
-)
-algo = Algorithm()
-action, myData = algo.getAction(state=mock_match_state)
-print(action)
-assert action == []
+# mock_match_state = MatchState(
+#     myPlayerNum=1,  # You can mock this as 0
+#     players=players,  # Empty list for players
+#     # myHand=['KD', '3H', '5C', '5S', '6C', '7S', '7D', '7C', 'TS', 'JS', 'QC'],  # Example hand
+#     myHand=['3C', '4C', '5C', '2D', '2H'],  # Example hand
+#     toBeat=mock_trick,  # No need to define, set as None
+#     matchHistory=matchHistory,  # Empty match history
+#     myData='{"remaining_deck": ["QD", "JH", "2S", "7H", "JC", "KS", "2D", "JD", "4D", "2C", "8S", "9S", "KC", "6H", "QH", "5H", "3C", "3S", "AC", "AD", "TH", "AS", "TD", "8D", "TC", "8C", "8H", "6D", "7S", "9H"]}'  # Empty string for myData
+# )
+# algo = Algorithm()
+# action, myData = algo.getAction(state=mock_match_state)
+# print(action)
+# assert action == []
 
 
 # from objects.imports import *
@@ -43,5 +43,15 @@ def calculate_aggression(remaining_cards: int) -> float:
     return aggression
 
 
-print(calculate_aggression(29))
+# print(calculate_aggression(29))
+
+
+myHand= ["3C", "4H", "5C", "6D", "TH", "JD", "QD", "KD", "AD", "2D"]  # Example hand
+
+print(type(myHand))
+
+expected = [("TH", "JD", "QD", "KD", "AD"), ("JD", "QD", "KD", "AD", "2D")]
+straight_trick, _ = Hand.get_straight_tricks(Hand.to_cards(myHand))
+
+assert straight_trick == expected
 

@@ -76,7 +76,51 @@ class Hand:
         cards: list[Card],
     ) -> tuple[list[tuple[Card, Card, Card, Card, Card]], int]:
         # TODO: easy
-        pass
+        cards.sort(key=lambda x: Card.strength(x))
+        tricks: list[tuple[Card, Card, Card]] = []
+        value = 0
+
+        l = 0
+        cur_trick = []
+        while (l < len(cards)):
+            card = cards[l]
+            if not cur_trick:
+                cur_trick.append(card)
+            else:
+                if Rank.strength(card.rank) == Rank.strength(cur_trick[-1].rank):
+                    l+=1
+                    continue
+            
+            if Rank.strength(card.rank) == Rank.strength(cur_trick[-1].rank) + 1:
+                cur_trick.append(card)
+            else:
+                cur_trick = [card]
+
+            if len(cur_trick) == 5:
+                templ = l
+                while (templ < len(cards) and Rank.strength(cards[templ].rank) == Rank.strength(cards[l].rank)):
+                    cur_trick[-1] = cards[templ]
+                    is_not_straight_flush = False
+
+                    for i in range(1, len(cur_trick)):
+                        if not cur_trick[i].suit == cur_trick[i-1].suit:
+                            is_not_straight_flush = True
+                            break
+                    
+                    if is_not_straight_flush:
+                        tricks.append(tuple(cur_trick))
+                        value += sum(
+                        Card.strength(card)
+                            for card in cur_trick
+                        )
+
+                    templ += 1
+                cur_trick[-1] = cards[l]
+                cur_trick = cur_trick[1:]
+            l+=1
+        
+        return tricks, value
+
 
     @staticmethod
     def get_flush_tricks(
@@ -163,7 +207,38 @@ class Hand:
         cards: list[Card],
     ) -> tuple[list[tuple[Card, Card, Card, Card, Card]], int]:
         # get straight trick + check that all same suit
-        pass
+        cards.sort(key=lambda x: Card.suit_strength(x))
+        tricks: list[tuple[Card, Card, Card]] = []
+        value = 0
+
+        l = 0
+        cur_trick = []
+        while (l < len(cards)):
+            card = cards[l]
+            if not cur_trick:
+                cur_trick.append(card)
+            else:
+                if Rank.strength(card.rank) == Rank.strength(cur_trick[-1].rank):
+                    l+=1
+                    continue
+            
+            if Rank.strength(card.rank) == Rank.strength(cur_trick[-1].rank) + 1 \
+                and Suit.strength(card.suit) == Suit.strength(cur_trick[-1].suit):
+                cur_trick.append(card)
+            else:
+                cur_trick = [card]
+
+            if len(cur_trick) == 5:                
+                tricks.append(tuple(cur_trick))
+                value += sum(
+                Card.strength(card)
+                    for card in cur_trick
+                )
+
+                cur_trick = cur_trick[1:]
+            l+=1
+        
+        return tricks, value
 
     @staticmethod
     def get_5_card_tricks(
@@ -178,6 +253,20 @@ class Hand:
         # get_full_house_tricks
         # get_four_of_a_kind_tricks
         # get_straight_flush_tricks
+
+        tricks = {
+            0: Hand.get_straight_tricks(cards),
+            1: Hand.get_flush_tricks(cards),
+            2: Hand.get_full_house_tricks(cards),
+            3: Hand.get_four_of_a_kind_tricks(cards),
+            4: Hand.get_straight_flush_tricks(cards),
+        }
+
+    @staticmethod
+    def get_5_card_trick_type(
+        cards: list[Card],
+    ) -> int:
+        # returnw which type of 5 card trick it is: 0-4
         pass
 
     def __iter__(self) -> list[Card]:

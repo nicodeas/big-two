@@ -83,6 +83,69 @@ class TestHand:
         )
         assert len(total_four_of_a_kind_tricks) == 624
 
+    def test_get_straight(self):
+        a = Card("3C")
+        b = Card("4C")
+        c = Card("5C")
+        d = Card("6D")
+        e = Card("7D")
+        f = Card("7C")
+        g = Card("7H")
+        h = Card("8D")
+        i = Card("TD")
+        j = Card("JC")
+        k = Card("QS")
+        l = Card("KS")
+        m = Card("AS")
+
+        myHand=[a, b, c, d, e, f, g, h, i, j, k, l, m]  # Example hand
+
+        expected = [(a, b, c, d, e), (a, b, c, d, f), (a, b, c, d, g), (b, c, d, e, h), (i, j, k, l, m)]
+        
+        straight_trick, _ = Hand.get_straight_tricks(myHand)
+        
+        assert straight_trick == expected
+    
+    def test_get_straight_ignore_flush(self):
+        a = Card("3C")
+        b = Card("4C")
+        c = Card("5C")
+        d = Card("6C")
+        e = Card("7C")
+
+        myHand=[a, b, c, d, e]  # Example hand
+        expected = []
+        
+        straight_trick, _ = Hand.get_straight_tricks(myHand)
+        
+        assert straight_trick == expected
+
+    def test_get_straight_flush(self):
+        a = Card("3C")
+        b = Card("4C")
+        c = Card("5C")
+        d = Card("6D")
+        e = Card("TH")
+        f = Card("JD")
+        g = Card("QD")
+        h = Card("KD")
+        i = Card("AD")
+        j = Card("2D")
+
+        myHand=[a, b, c, d, e, f, g, h, i, j]  # Example hand
+
+        expected = [(f, g, h, i, j)]
+        
+        straight_flush_trick, _ = Hand.get_straight_flush_tricks(myHand)
+        
+        assert straight_flush_trick == expected
+
+        total_straight_flush_tricks, _ = Hand.get_straight_flush_tricks(
+            [Card(r + s) for s in Suit.suits for r in Rank.ranks]
+        )
+        # 23456 is not a valid straight
+        assert len(total_straight_flush_tricks) == 36
+
     def test_get_flush_tricks(self):
         deck = TestHand.random_deck()
         total_flush_tricks, _ = Hand.get_flush_tricks(deck)
