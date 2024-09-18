@@ -266,24 +266,17 @@ class Hand:
     def get_5_card_trick_type(
         cards: list[Card],
     ) -> int:
-        # returnw which type of 5 card trick it is: 0-4
-        pass
-
-    @staticmethod
-    def get_5_card_trick_type(
-        cards: list[Card],
-    ) -> int:
         type_of_trick = None
         # get_straight_tricks
-        type_of_trick = 0 if len(Hand.get_straight_tricks(cards)[0]) > 0 else None
+        type_of_trick = 0 if len(Hand.get_straight_tricks(cards)[0]) > 0 else type_of_trick
         # get_flush_tricks
-        type_of_trick = 0 if len(Hand.get_flush_tricks(cards)[0]) > 0 else None
+        type_of_trick = 1 if len(Hand.get_flush_tricks(cards)[0]) > 0 else type_of_trick
         # get_full_house_tricks
-        type_of_trick = 0 if len(Hand.get_full_house_tricks(cards)[0]) > 0 else None
+        type_of_trick = 2 if len(Hand.get_full_house_tricks(cards)[0]) > 0 else type_of_trick
         # get_four_of_a_kind_tricks
-        type_of_trick = 0 if len(Hand.get_four_of_a_kind_tricks(cards)[0]) > 0 else None
+        type_of_trick = 3 if len(Hand.get_four_of_a_kind_tricks(cards)[0]) > 0 else type_of_trick
         # get_straight_flush_tricks
-        type_of_trick = 0 if len(Hand.get_straight_flush_tricks(cards)[0]) > 0 else None
+        type_of_trick = 4 if len(Hand.get_straight_flush_tricks(cards)[0]) > 0 else type_of_trick
 
         if type_of_trick is None:
             print("Error: Couldn't determine type of trick")
