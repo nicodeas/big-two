@@ -32,6 +32,13 @@ class TestCard:
 
 
 class TestHand:
+
+    @staticmethod
+    def random_deck() -> list[Card]:
+        deck = [Card(r + s) for s in Suit.suits for r in Rank.ranks]
+        random.shuffle(deck)
+        return deck
+
     def test_get_2_card_tricks(self):
         a = Card("2D")
         b = Card("2C")
