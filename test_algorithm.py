@@ -85,11 +85,25 @@ class TestHand:
         g = Card("QD")
         h = Card("KD")
         i = Card("AD")
-        j = Card("2D")
+        j = Card("2S")
 
         myHand=[a, b, c, d, e, f, g, h, i, j]  # Example hand
 
         expected = [(e, f, g, h, i), (f, g, h, i, j)]
+        
+        straight_trick, _ = Hand.get_straight_tricks(myHand)
+        
+        assert straight_trick == expected
+    
+    def test_get_straight_ignore_flush(self):
+        a = Card("3C")
+        b = Card("4C")
+        c = Card("5C")
+        d = Card("6C")
+        e = Card("7C")
+
+        myHand=[a, b, c, d, e]  # Example hand
+        expected = []
         
         straight_trick, _ = Hand.get_straight_tricks(myHand)
         

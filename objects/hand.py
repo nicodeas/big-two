@@ -103,11 +103,20 @@ class Hand:
                 cur_trick = [card]
 
             if len(cur_trick) == 5:
-                tricks.append(tuple(cur_trick))
-                value += sum(
-                Card.strength(card)
-                    for card in cur_trick
-                )
+                is_not_straight_flush = False
+
+                for i in range(1, len(cur_trick)):
+                    if not cur_trick[i].suit == cur_trick[i-1].suit:
+                        is_not_straight_flush = True
+                        break
+                
+                if is_not_straight_flush:
+                    tricks.append(tuple(cur_trick))
+                    value += sum(
+                    Card.strength(card)
+                        for card in cur_trick
+                    )
+
                 cur_trick = cur_trick[1:]
             l+=1
         
