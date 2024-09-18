@@ -180,5 +180,30 @@ class Hand:
         # get_straight_flush_tricks
         pass
 
+    @staticmethod
+    def get_type_of_5_card_tricks(
+        cards: list[Card],
+    ) -> int:
+        # maybe return as a dictionary with keys 1, 2, 3, 4, 5 for relative strength of 5 card tricks
+        # might make it easier to compare against
+        type_of_trick = None
+        # TODO: weakest(top) to strongest (bottom)
+        # get_straight_tricks
+        type_of_trick = 0 if len(Hand.get_straight_tricks(cards)[0]) > 0 else None
+        # get_flush_tricks
+        type_of_trick = 0 if len(Hand.get_flush_tricks(cards)[0]) > 0 else None
+        # get_full_house_tricks
+        type_of_trick = 0 if len(Hand.get_full_house_tricks(cards)[0]) > 0 else None
+        # get_four_of_a_kind_tricks
+        type_of_trick = 0 if len(Hand.get_four_of_a_kind_tricks(cards)[0]) > 0 else None
+        # get_straight_flush_tricks
+        type_of_trick = 0 if len(Hand.get_straight_flush_tricks(cards)[0]) > 0 else None
+
+        if type_of_trick is None:
+            print("Error: Couldn't determine type of trick")
+            return 4
+
+        return type_of_trick
+
     def __iter__(self) -> list[Card]:
         return iter(self.cards)
