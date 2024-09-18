@@ -11,6 +11,7 @@ class Hand:
 
     # TODO: figure out multiplier
     FOUR_OF_A_KIND_MULTIPLIER = 1
+    FLUSH_STRENGTH_MULTIPLIER = 1
 
     def __init__(self, cards: list[Card] | list[str]) -> None:
         self.cards = self.to_cards(cards)
@@ -174,4 +175,3 @@ class Hand:
 
     def __iter__(self) -> list[Card]:
         return iter(self.cards)
-
