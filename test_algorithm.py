@@ -112,7 +112,7 @@ class TestHand:
         
         assert straight_trick == expected
 
-    def test_get_flush(self):
+    def test_get_straight_flush(self):
         a = Card("3C")
         b = Card("4C")
         c = Card("5C")
@@ -128,15 +128,15 @@ class TestHand:
 
         expected = [(f, g, h, i, j)]
         
-        flush_trick, _ = Hand.get_flush_tricks(myHand)
+        straight_flush_trick, _ = Hand.get_straight_flush_tricks(myHand)
         
-        assert flush_trick == expected
+        assert straight_flush_trick == expected
 
-        total_flush_tricks, _ = Hand.get_flush_tricks(
+        total_straight_flush_tricks, _ = Hand.get_straight_flush_tricks(
             [Card(r + s) for s in Suit.suits for r in Rank.ranks]
         )
         # 23456 is not a valid straight
-        assert len(total_flush_tricks) == 36
+        assert len(total_straight_flush_tricks) == 36
 
     def test_action_outputs_strings(self):
         # Mock object creation with only myHand being relevant
