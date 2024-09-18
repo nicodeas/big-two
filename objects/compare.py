@@ -60,7 +60,7 @@ def is_straight_flush_stronger(trick1: list[Card], trick2: list[Card]):
     if Card.strength(trick1[-1]) == Card.strength(trick2[-1]):
         return Rank.strength(trick1[-1].suit) > Rank.strength(trick2[-1].suit)
     else:
-        Card.strength(trick1[-1]) > Card.strength(trick2[-1])
+        return Card.strength(trick1[-1]) > Card.strength(trick2[-1])
 
 
 

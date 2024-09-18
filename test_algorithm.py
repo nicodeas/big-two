@@ -351,6 +351,37 @@ class TestHand:
         action, myData = algo.getAction(state=mock_match_state)
         assert action == ["7D", "7C", "7S"]
 
+    def test_compare_5_card_tricks(self):
+        # straight
+        straight1 = [Card('3S'), Card('4H'), Card('5D'), Card('6C'), Card('7S')]
+        straight2 = [Card('3S'), Card('4H'), Card('5D'), Card('6C'), Card('7D')]
+        assert is_trick_stronger(straight1, straight2) == True
+        
+        # flush
+        flush1 = [Card('2H'), Card('5H'), Card('7H'), Card('9H'), Card('KH')]
+        flush2 = [Card('2H'), Card('6H'), Card('7H'), Card('9H'), Card('KH')]
+        flush3 = [Card('2S'), Card('5S'), Card('7S'), Card('9S'), Card('KS')]
+
+        assert is_trick_stronger(flush1, flush2) == False
+        assert is_trick_stronger(flush3, flush1) == True
+        
+        # full house
+        full_house1 = [Card('4S'), Card('4D'), Card('4C'), Card('7H'), Card('7D')]
+        full_house2 = [Card('5S'), Card('5D'), Card('5C'), Card('7S'), Card('7C')]
+        assert is_trick_stronger(full_house2, full_house1) == True
+        
+        # four of a kind
+        four_of_a_kind1 = [Card('9S'), Card('9D'), Card('9H'), Card('9C'), Card('KC')]
+        four_of_a_kind2 = [Card('8S'), Card('8D'), Card('8H'), Card('8C'), Card('2S')]
+        assert is_trick_stronger(four_of_a_kind1, four_of_a_kind2) == True
+        
+        # straight flush
+        straight_flush1 = [Card('4S'), Card('5S'), Card('6S'), Card('7S'), Card('8S')]
+        straight_flush2 = [Card('3D'), Card('4D'), Card('5D'), Card('6D'), Card('7D')]
+        straight_flush3 = [Card('4H'), Card('5H'), Card('6H'), Card('7H'), Card('8H')]
+        assert is_trick_stronger(straight_flush1, straight_flush2) == True
+        assert is_trick_stronger(straight_flush3, straight_flush1) == False
+
 
 class TestGameHistory:
     def test_updating_cards(self):
