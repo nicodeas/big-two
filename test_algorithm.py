@@ -88,6 +88,11 @@ class TestHand:
         total_flush_tricks, _ = Hand.get_flush_tricks(deck)
         assert len(total_flush_tricks) == 5148
 
+    def test_get_full_house_tricks(self):
+        deck = TestHand.random_deck()
+        total_full_house_tricks, _ = Hand.get_full_house_tricks(deck)
+        assert len(total_full_house_tricks) == 3744
+
     def test_action_outputs_strings(self):
         # Mock object creation with only myHand being relevant
         mock_match_state = MatchState(
