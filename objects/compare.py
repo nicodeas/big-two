@@ -36,12 +36,12 @@ def is_flush_stronger(trick1: list[Card], trick2: list[Card]):
     trick1 = Hand.sort_by_strength(trick1)
     trick2 = Hand.sort_by_strength(trick2)
     for i in range(4, -1, -1):
-        if Card.strength(trick1[i]) > Card.strength(trick2[i]):
+        if Rank.strength(trick1[i].rank) > Rank.strength(trick2[i].rank):
             return True
-        elif Card.strength(trick1[i]) < Card.strength(trick2[i]):
+        elif Rank.strength(trick1[i].rank) < Rank.strength(trick2[i].rank):
             return False
         
-    return Rank.strength(trick1[-1].suit) > Rank.strength(trick2[-1].suit)
+    return Suit.strength(trick1[-1].suit) > Suit.strength(trick2[-1].suit)
 
 
 def is_full_house_stronger(trick1: list[Card], trick2: list[Card]):

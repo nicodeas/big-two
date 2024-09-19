@@ -362,9 +362,12 @@ class TestHand:
         flush1 = [Card('2H'), Card('5H'), Card('7H'), Card('9H'), Card('KH')]
         flush2 = [Card('2H'), Card('6H'), Card('7H'), Card('9H'), Card('KH')]
         flush3 = [Card('2S'), Card('5S'), Card('7S'), Card('9S'), Card('KS')]
+        flush4 = [Card('3D'), Card('4D'), Card('6D'), Card('9D'), Card('JD')]
+        flush5 = [Card('4C'), Card('6C'), Card('7C'), Card('8C'), Card('JC')]
 
         assert is_trick_stronger(flush1, flush2) == False
         assert is_trick_stronger(flush3, flush1) == True
+        assert is_trick_stronger(flush4, flush5) == True
         
         # full house
         full_house1 = [Card('3H'), Card('3S'), Card('9D'), Card('9C'), Card('9S')]
