@@ -356,6 +356,7 @@ class TestHand:
         straight1 = [Card('3S'), Card('4H'), Card('5D'), Card('6C'), Card('7S')]
         straight2 = [Card('3S'), Card('4H'), Card('5D'), Card('6C'), Card('7D')]
         assert is_trick_stronger(straight1, straight2) == True
+        assert is_trick_stronger(straight2, straight1) == False
         
         # flush
         flush1 = [Card('2H'), Card('5H'), Card('7H'), Card('9H'), Card('KH')]
@@ -366,14 +367,16 @@ class TestHand:
         assert is_trick_stronger(flush3, flush1) == True
         
         # full house
-        full_house1 = [Card('4S'), Card('4D'), Card('4C'), Card('7H'), Card('7D')]
-        full_house2 = [Card('5S'), Card('5D'), Card('5C'), Card('7S'), Card('7C')]
-        assert is_trick_stronger(full_house2, full_house1) == True
+        full_house1 = [Card('3H'), Card('3S'), Card('9D'), Card('9C'), Card('9S')]
+        full_house2 = [Card('4D'), Card('4C'), Card('4S'), Card('2D'), Card('2C')]
+        assert is_trick_stronger(full_house1, full_house2) == True
+        assert is_trick_stronger(full_house2, full_house1) == False
         
         # four of a kind
         four_of_a_kind1 = [Card('9S'), Card('9D'), Card('9H'), Card('9C'), Card('KC')]
         four_of_a_kind2 = [Card('8S'), Card('8D'), Card('8H'), Card('8C'), Card('2S')]
         assert is_trick_stronger(four_of_a_kind1, four_of_a_kind2) == True
+        assert is_trick_stronger(four_of_a_kind2, four_of_a_kind1) == False
         
         # straight flush
         straight_flush1 = [Card('4S'), Card('5S'), Card('6S'), Card('7S'), Card('8S')]
@@ -597,3 +600,22 @@ class TestAlgorithmFiveCard:
         algo = Algorithm()
         action, myData = algo.getAction(state=mock_match_state)
         assert action == ["4D", "4C", "4S", "7D", "7S"]
+
+    def test_pass_weaker_5_card_trick(self):
+        mock_trick = Trick(
+            playerNum=1,  # Mock player number, for example player 1
+            cards=['3H', '3S', '9D', '9C', '9S'],  # Example cards played in the trick
+        )
+
+        mock_match_state = MatchState(
+            myPlayerNum=1,  # You can mock this as 0
+            players=players,  # Empty list for players
+            # myHand=['KD', '3H', '5C', '5S', '6C', '7S', '7D', '7C', 'TS', 'JS', 'QC'],  # Example hand
+            myHand=['4D', '4C', '4S', '2D', '2C'],  # Example hand
+            toBeat=mock_trick,  # No need to define, set as None
+            matchHistory=matchHistory,  # Empty match history
+            myData='',  # Empty string for myData
+        )
+        algo = Algorithm()
+        action, myData = algo.getAction(state=mock_match_state)
+        assert action == []

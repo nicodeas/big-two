@@ -45,6 +45,8 @@ def is_flush_stronger(trick1: list[Card], trick2: list[Card]):
 
 
 def is_full_house_stronger(trick1: list[Card], trick2: list[Card]):
+    trick1 = Hand.sort_by_strength(trick1)
+    trick2 = Hand.sort_by_strength(trick2)
     # Compare the middle card rank as this is guaranteed to be the triple
     return Card.strength(trick1[2]) > Card.strength(trick2[2])
 
