@@ -42,8 +42,10 @@ class Algorithm:
             action, myData = self.play_a_move(trick_size)
             if action:
                 return action, myData
-        
-        return self.tempPassMove
+            
+        # Can't pass so play lowest valid card
+        tricks = [[c] for c in Hand.sort_by_strength(self.game.hand)]
+        return tricks[0], myData
     
     def one_card_trick(self):
         trick = one_card_trick(self.game)
