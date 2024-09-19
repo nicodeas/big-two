@@ -39,6 +39,8 @@ def calculate_aggression_two(remaining_cards: int) -> float:
     return aggression
 
 def calculate_trick_strength_two(trick: list[Card], possible_tricks: list[list[Card]]) -> float:
+    if len(possible_tricks) == 0:
+        return 0
     num_beaten = sum(1 for opponent_trick in possible_tricks if is_trick_stronger(opponent_trick, trick))
     probability_of_beaten = num_beaten / len(possible_tricks)
 
