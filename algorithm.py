@@ -45,7 +45,7 @@ class Algorithm:
             
         # Can't pass so play lowest valid card
         tricks = [[c] for c in Hand.sort_by_strength(self.game.hand)]
-        return tricks[0], myData
+        return tricks[0], self.game
     
     def one_card_trick(self):
         trick = one_card_trick(self.game)

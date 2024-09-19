@@ -40,11 +40,11 @@ def five_card_trick(state: Game) -> list[Card]:
     else:
         valid_tricks = get_all_valid_tricks_five(state.hand.cards)
 
-    print(valid_tricks)
     if not valid_tricks: 
         print("No valid tricks")
         return []
     
+    print(valid_tricks)
     return valid_tricks[-1]
     
     return []
