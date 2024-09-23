@@ -484,7 +484,7 @@ class TestAlgorithmOneCard:
             ],  # Example hand
             toBeat=mock_trick,  # No need to define, set as None
             matchHistory=matchHistory,  # Empty match history
-            myData='{"remaining_deck": ["JS", "9D", "7S", "8H", "KS", "8S", "AD", "8C", "4C", "AC", "5S", "9C", "KH", "QC", "5D", "4D", "8D", "6D", "9H", "5C", "2C", "5H", "3S", "TH", "4H", "2D", "3H", "TS", "TC"]}',  # Empty string for myData
+            myData='{"remaining_deck": ["JS", "9D", "7S", "8H", "KS", "8S", "AD", "8C", "4C", "AC", "5S", "9C", "KH", "QC", "5D", "4D", "8D", "6D", "9H", "5C", "2C", "5H", "3S", "TH", "4H", "2D"]}',  # Empty string for myData
         )
         algo = Algorithm()
         action, myData = algo.getAction(state=mock_match_state)
@@ -508,6 +508,25 @@ class TestAlgorithmOneCard:
         algo = Algorithm()
         action, myData = algo.getAction(state=mock_match_state)
         assert action == ["KH"]
+
+    def test_high_aggression_guaranteed(self):
+        mock_trick = Trick(
+            playerNum=1,  # Mock player number, for example player 1
+            cards=["JD"],  # Example cards played in the trick
+        )
+
+        # Mock object creation with only myHand being relevant
+        mock_match_state = MatchState(
+            myPlayerNum=0,  # You can mock this as 0
+            players=[],  # Empty list for players
+            myHand=["AS", "2D"],  # Example hand
+            toBeat=mock_trick,  # No need to define, set as None
+            matchHistory=None,  # Empty match history
+            myData='{"remaining_deck": ["QD", "KH", "4C", "7H", "JC"]}',  # Empty string for myData
+        )
+        algo = Algorithm()
+        action, myData = algo.getAction(state=mock_match_state)
+        assert action == ["2D"]
 
 
 class TestAlgorithmTwoCard:

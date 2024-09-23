@@ -31,7 +31,7 @@ def calculate_aggression_one(remaining_cards: int) -> float:
     normalized_cards = (max_cards - remaining_cards) / (max_cards - min_cards)
     # Parameters for the sigmoid function
     scaling_factor = 0.05  # Scaling factor to control the growth
-    growth_rate = 6.0  # Rate of growth
+    growth_rate = 5.0  # Rate of growth
     
     # Calculate sigmoid function
     aggression = min(scaling_factor * (math.exp(growth_rate * normalized_cards) - 1), 1)
@@ -67,19 +67,34 @@ def one_card_trick(state: Game) -> list[Card]:
     print(trick_probabilities)
 
     if (aggression > 0.9):
-            # if game is near end game then play your strongest card
+        # if game is near end game then play your strongest card
         for i, trick in enumerate(valid_tricks):
-            # if game is getting closer to end game then play a strong card
-            if trick_probabilities[i] <= 0.2: 
-                return trick
+            if trick_probabilities[len(trick_probabilities) - i - 1] == 0:
+                return valid_tricks[len(valid_tricks) - i - 1]
             
-        return valid_tricks[-1]
+            # if near end game the card can be beaten by a large portion of cards, discard it
+            if trick_probabilities[i] > 0.7: 
+                return trick
+
+            # if game is getting closer to end game then play a strong card
+            if trick_probabilities[i] <= 0.3: 
+                return trick
+        
+        # if neither then just play the lowest valid trick
+        return valid_tricks[0]
 
     if (aggression > 0.7):
         for i, trick in enumerate(valid_tricks):
-            # if game is getting closer to end game then play a strong card
-            if trick_probabilities[i] <= 0.35: 
+            # if near end game the card can be beaten by a large portion of cards, discard it
+            if trick_probabilities[i] > 0.7: 
                 return trick
+
+            # if game is getting closer to end game then play a strong card
+            if 0.1 <= trick_probabilities[i] <= 0.35: 
+                return trick
+        
+        # if neither then just play the lowest valid trick
+        return valid_tricks[0]
             
     if (aggression > 0.25):
         # To give cards priority
