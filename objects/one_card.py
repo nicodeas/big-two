@@ -44,7 +44,7 @@ def calculate_trick_strength_one(trick: list[Card], possible_tricks: list[list[C
 
     return probability_of_beaten
 
-def valuate(trick: list[Card], remaining_deck: list[Card]) -> float:
+def valuate(trick: list[Card], cards: list[Card], remaining_deck: list[Card]) -> float:
     value = 1       # start off with a valuation of unity
 
     remaining_valuations = map(Card.strength, remaining_deck)
@@ -56,7 +56,7 @@ def valuate(trick: list[Card], remaining_deck: list[Card]) -> float:
 
     # penalise cards that form combinations
     for card in trick:
-        for valid_trick in (*get_all_valid_tricks_two(),*get_all_valid_tricks_three(),*get_all_valid_tricks_five()):
+        for valid_trick in (*get_all_valid_tricks_two(cards),*get_all_valid_tricks_three(cards),*get_all_valid_tricks_five(cards)):
             if card in valid_trick:
                 value *= 0.5
 
@@ -92,7 +92,7 @@ def one_card_trick(state: Game) -> list[Card]:
             if trick_probabilities[i] <= 0.2: 
                 filtered_late.append(trick)
 
-        filtered_late.sort(key=lambda t: valuate(t, remaining_deck), reverse=True)
+        filtered_late.sort(key=lambda t: valuate(t, state.hand.cards, remaining_deck), reverse=True)
         if (len(filtered_late) > 0):
             return filtered_late[0]
             
@@ -104,7 +104,7 @@ def one_card_trick(state: Game) -> list[Card]:
             # if game is getting closer to end game then play a strong card
             if trick_probabilities[i] <= 0.35: 
                 filtered_mid_late.append(trick)
-    filtered_mid_late.sort(key=lambda t: valuate(t, remaining_deck), reverse=True)
+    filtered_mid_late.sort(key=lambda t: valuate(t, state.hand.cards, remaining_deck), reverse=True)
     if (len(filtered_mid_late) > 0):
         return filtered_mid_late[0]
             
@@ -122,11 +122,11 @@ def one_card_trick(state: Game) -> list[Card]:
                 filtered_early_mid_high.append(trick)
         
         # return the trick with the highest valuation, preferencing low cards first
-        filtered_early_mid_low.sort(key=lambda t: valuate(t, remaining_deck), reverse=True)
+        filtered_early_mid_low.sort(key=lambda t: valuate(t, state.hand.cards, remaining_deck), reverse=True)
         if (len(filtered_early_mid_low) > 0):
             return filtered_early_mid_low[0]
 
-        filtered_early_mid_high.sort(key=lambda t: valuate(t, remaining_deck), reverse=True)
+        filtered_early_mid_high.sort(key=lambda t: valuate(t, state.hand.cards, remaining_deck), reverse=True)
         if (len(filtered_early_mid_high) > 0):
             return filtered_early_mid_high[0]
 
@@ -141,7 +141,7 @@ def one_card_trick(state: Game) -> list[Card]:
         if trick_probabilities[i] >= 0.4: 
             filtered_early.append(trick)
     # return the trick with highest valuation
-    filtered_early.sort(key=lambda t: valuate(t, remaining_deck), reverse=True)
+    filtered_early.sort(key=lambda t: valuate(t, state.hand.cards, remaining_deck), reverse=True)
     if (len(filtered_early) > 0):
         return filtered_early[0]
             
