@@ -7,11 +7,11 @@ class Valuator:
     def valuate(trick: list[Card], cards: list[Card], remaining_deck: list[Card]) -> float:
         value = 1       # start off with a valuation of unity
 
-        remaining_valuations = map(Card.strength, remaining_deck)
+        remaining_valuations = list(map(Card.strength, remaining_deck))
         # penalise high cards
         for card in trick:
             strength = Card.strength(card)
-            if strength < max(remaining_valuations):            # TODO: maybe bias depending on how many cards remaining can beat it
+            if len(remaining_valuations) > 0 and strength < max(remaining_valuations):            # TODO: maybe bias depending on how many cards remaining can beat it
                 value *= 1 - strength / 51
 
         # penalise cards that form combinations
