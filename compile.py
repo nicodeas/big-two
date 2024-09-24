@@ -12,7 +12,8 @@ files_to_merge = [
     'objects/one_card.py',
     'objects/two_card.py',
     'objects/three_card.py',
-    'objects/five_card.py'
+    'objects/five_card.py',
+    'objects/valuator.py'
 ]
 
 # Define paths
