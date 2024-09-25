@@ -9,7 +9,12 @@ from objects.five_card import *
 class Valuator:
     # valuate: takes in list of playable tricks all consisting of n cards (as well as auxiliary data) and evaluates their strength
     @staticmethod
-    def valuate(tricks: list[list[Card]], hand: list[Card], remaining_deck: list[Card]) -> list[tuple[list[Card], float]]:
+    def valuate(tricks: list[list[Card]], hand: list[Card], remaining_deck: list[Card], aggression: float = 1) -> list[tuple[list[Card], float]]:
+        # NOTE/TODO: aggression defaults to 1, which occurs for 5-card tricks.
+        # This makes sense since we ideally want to play our best 5-card tricks early to prevent opponents from playing theirs,
+        # with the hopes that we can break theirs up before they get a chance to play it.
+        # Similar logic also occurs when setting value = 1 for strength >= max(remaining_valuations)
+        # This should probably be more obvious in the code logic :/ - feel free to fix
         valuation = []
 
         for trick in tricks:
@@ -25,8 +30,8 @@ class Valuator:
             remaining_valuations = list(map(Card.strength, remaining_deck))
             for card in trick:
                 strength = Card.strength(card)
-                if len(remaining_valuations) > 0 and strength < max(remaining_valuations):            # TODO: maybe bias depending on how many cards remaining can beat it
-                    value *= 1 - strength / 51
+                if len(remaining_valuations) > 0 and strength < max(remaining_valuations):
+                    value *= Valuator.aggression_curve(aggression, strength)
                 
                 if strength >= max(remaining_valuations):
                     value = 1               # if the card is the strongest in the deck, play it!
@@ -54,6 +59,17 @@ class Valuator:
         for trick in tricks:
             for c in trick:
                 if card == c:
+                    print(f"[VALUATOR]: card {card} in trick {trick}")
                     return True
 
         return False
+
+    # value certain cards differently at different points in game
+    @staticmethod
+    def aggression_curve(aggression: float, strength: int) -> float:
+        if aggression < 0.25:       # early game -- shed low cards
+            return 1 - strength / 51
+        elif aggression < 0.75:     # mid game -- play mid-high cards most
+            return 1 - ((strength - 36) / 15)**2
+        else:                       # late game -- play high cards
+            return strength / 51

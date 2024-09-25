@@ -31,7 +31,7 @@ def calculate_aggression_one(remaining_cards: int) -> float:
     normalized_cards = (max_cards - remaining_cards) / (max_cards - min_cards)
     # Parameters for the sigmoid function
     scaling_factor = 0.05  # Scaling factor to control the growth
-    growth_rate = 6.0  # Rate of growth
+    growth_rate = 5.0  # Rate of growth
     
     # Calculate sigmoid function
     aggression = min(scaling_factor * (math.exp(growth_rate * normalized_cards) - 1), 1)
@@ -65,7 +65,7 @@ def one_card_trick(state: Game) -> list[Card]:
     print(valid_tricks)
     print(trick_probabilities)
 
-    valuation = Valuator.valuate(valid_tricks, state.hand.cards, remaining_deck)
+    valuation = Valuator.valuate(valid_tricks, state.hand.cards, remaining_deck, aggression)
     
     if len(valuation) > 0:
         return valuation[0][0]
