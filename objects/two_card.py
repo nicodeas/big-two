@@ -31,7 +31,7 @@ def calculate_aggression_two(remaining_cards: int) -> float:
     normalized_cards = (max_cards - remaining_cards) / (max_cards - min_cards)
     # Parameters for the sigmoid function
     scaling_factor = 0.05  # Scaling factor to control the growth
-    growth_rate = 6.0  # Rate of growth
+    growth_rate = 5.0  # Rate of growth
     
     # Calculate sigmoid function
     aggression = min(scaling_factor * (math.exp(growth_rate * normalized_cards) - 1), 1)
@@ -69,67 +69,9 @@ def two_card_trick(state: Game) -> list[Card]:
     print(valid_tricks)
     print(trick_probabilities)
     
-    filtered_late = []
-    if (aggression > 0.9):
-            # if game is near end game then play your strongest card
-        for i, trick in enumerate(valid_tricks):
-            # if game is getting closer to end game then play a strong card
-            if trick_probabilities[i] <= 0.2: 
-                filtered_late.append(trick)
-            
-        filtered_late.sort(key=lambda t: Valuator.valuate(t, state.hand.cards, remaining_deck), reverse=True)
-        if (len(filtered_late) > 0):
-            return filtered_late[0]
+    valuation = Valuator.valuate(valid_tricks, state.hand.cards, remaining_deck, aggression)
+    
+    if len(valuation) > 0:
+        return valuation[0][0]
 
-        return valid_tricks[-1]
-
-    filtered_mid_late = []
-    if (aggression > 0.7):
-        for i, trick in enumerate(valid_tricks):
-            # if game is getting closer to end game then play a strong card
-            if trick_probabilities[i] <= 0.35: 
-                filtered_mid_late.append(trick)
-    filtered_mid_late.sort(key=lambda t: Valuator.valuate(t, state.hand.cards, remaining_deck), reverse=True)
-    if (len(filtered_mid_late) > 0):
-        return filtered_mid_late[0]
-            
-    if (aggression > 0.25):
-        filtered_early_mid_low = []
-        filtered_early_mid_high = []
-        # To give cards priority
-        for i, trick in enumerate(valid_tricks):
-            # if in mid game the card can be beaten by a large portion of cards, discard it
-            if trick_probabilities[i] > 0.7: 
-                filtered_early_mid_low.append(trick)
-            
-            # Else, play a stronger than average card
-            if 0.2 <= trick_probabilities[i] <= 0.4: 
-                filtered_early_mid_high.append(trick)
-        
-        # return the trick with the highest valuation, preferencing low cards first
-        filtered_early_mid_low.sort(key=lambda t: Valuator.valuate(t, state.hand.cards, remaining_deck), reverse=True)
-        if (len(filtered_early_mid_low) > 0):
-            return filtered_early_mid_low[0]
-
-        filtered_early_mid_high.sort(key=lambda t: Valuator.valuate(t, state.hand.cards, remaining_deck), reverse=True)
-        if (len(filtered_early_mid_high) > 0):
-            return filtered_early_mid_high[0]
-
-        # if neither then just play the lowest valid trick
-        return valid_tricks[0]
-            
-        
-            
-    filtered_early = []
-    for i, trick in enumerate(valid_tricks):
-        # if the card can be beaten by 40% of the cards during early game
-        if trick_probabilities[i] >= 0.4: 
-            filtered_early.append(trick)
-    filtered_early.sort(key=lambda t: Valuator.valuate(t, state.hand.cards, remaining_deck), reverse=True)
-    if (len(filtered_early) > 0):
-        return filtered_early[0]
-            
     return []
-
-
-
