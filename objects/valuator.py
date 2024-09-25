@@ -1,5 +1,6 @@
 from objects.game import *
 from objects.compare import *
+import math
 
 from objects.two_card import *
 from objects.three_card import *
@@ -70,6 +71,9 @@ class Valuator:
         if aggression < 0.25:       # early game -- shed low cards
             return 1 - strength / 51
         elif aggression < 0.75:     # mid game -- play mid-high cards most
-            return 1 - ((strength - 36) / 15)**2
+            if strength >= 36:
+                return 1 - ((strength - 36) / 15)**2
+            else:
+                return 1 / (1 + math.exp(-((strength-20)/5)))
         else:                       # late game -- play high cards
             return strength / 51
