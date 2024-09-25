@@ -44,10 +44,9 @@ def five_card_trick(state: Game) -> list[Card]:
         print("No valid tricks")
         return []
     
-    print(valid_tricks)
-    return valid_tricks[-1]
+    valuation = Valuator.valuate(valid_tricks, state.hand.cards, remaining_deck)
     
+    if len(valuation) > 0:
+        return valuation[0][0]
+
     return []
-
-
-

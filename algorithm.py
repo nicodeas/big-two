@@ -106,6 +106,8 @@ class Algorithm:
         
         trick_size = len(state.toBeat.cards)
         action, myData = self.play_a_move(trick_size)
+
+        print(f"THIS IS THE ACTION: {action}")
         
         # TODO Write your algorithm logic here
 

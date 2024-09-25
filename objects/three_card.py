@@ -70,43 +70,9 @@ def three_card_trick(state: Game) -> list[Card]:
     print(valid_tricks)
     print(trick_probabilities)
     
-    if (aggression > 0.9):
-            # if game is near end game then play your strongest card
-        for i, trick in enumerate(valid_tricks):
-            # if game is getting closer to end game then play a strong card
-            if trick_probabilities[i] <= 0.2: 
-                return trick
-            
-        return valid_tricks[-1]
+    valuation = Valuator.valuate(valid_tricks, state.hand.cards, remaining_deck)
+    
+    if len(valuation) > 0:
+        return valuation[0][0]
 
-    if (aggression > 0.7):
-        for i, trick in enumerate(valid_tricks):
-            # if game is getting closer to end game then play a strong card
-            if trick_probabilities[i] <= 0.35: 
-                return trick
-            
-    if (aggression > 0.25):
-        # To give cards priority
-        for i, trick in enumerate(valid_tricks):
-            # if in mid game the card can be beaten by a large portion of cards, discard it
-            if trick_probabilities[i] > 0.7: 
-                return trick
-            
-            # Else, play a stronger than average card
-            if 0.2 <= trick_probabilities[i] <= 0.4: 
-                return trick
-        
-        # if neither then just play the lowest valid trick
-        return valid_tricks[0]
-            
-        
-            
-    for i, trick in enumerate(valid_tricks):
-        # if the card can be beaten by 40% of the cards during early game
-        if trick_probabilities[i] >= 0.4: 
-            return trick
-            
     return []
-
-
-
