@@ -1,6 +1,7 @@
 from objects.game import *
 from objects.compare import *
 import math
+from objects.valuator import *
 
 # MERGE FROM HERE
 def get_all_valid_tricks_three(cards: list[Card]) -> list[list[Card]]:
@@ -23,31 +24,6 @@ def get_valid_tricks_three(cards: list[Card], trick_to_beat: list[Card]) -> list
 
     return valid_tricks
 
-def calculate_aggression_three(remaining_cards: int) -> float:
-    # Parameters
-    max_cards = 39  # Starting number of cards (52 - 13) start of game
-    min_cards = 4   # Lowest number of cards (1 for each player)
-    
-    # Normalize the number of remaining cards to a range from 0 to 1
-    normalized_cards = (max_cards - remaining_cards) / (max_cards - min_cards)
-    # Parameters for the sigmoid function
-    scaling_factor = 0.05  # Scaling factor to control the growth
-    growth_rate = 5.0  # Rate of growth
-    
-    # Calculate sigmoid function
-    aggression = min(scaling_factor * (math.exp(growth_rate * normalized_cards) - 1), 1)
-    
-    return aggression
-
-def calculate_trick_strength_three(trick: list[Card], possible_tricks: list[list[Card]]) -> float:
-    if len(possible_tricks) == 0:
-        return 0
-    num_beaten = sum(1 for opponent_trick in possible_tricks if is_trick_stronger(opponent_trick, trick))
-    probability_of_beaten = num_beaten / len(possible_tricks)
-
-    return probability_of_beaten
-
-
 def three_card_trick(state: Game) -> list[Card]:
     remaining_deck = list(state.remaining_deck)
 
@@ -62,17 +38,5 @@ def three_card_trick(state: Game) -> list[Card]:
         return []
 
     # Add algorithm below
-    aggression = calculate_aggression_three(len(remaining_deck))
-    print(f"Aggression value is: {aggression} for {len(remaining_deck)} num of cards")
-    possible_tricks, _ = Hand.get_2_card_tricks(remaining_deck)
-    # return []
-    trick_probabilities = [calculate_trick_strength_three(trick, possible_tricks) for trick in valid_tricks]
-    print(valid_tricks)
-    print(trick_probabilities)
-    
-    valuation = Valuator.valuate(valid_tricks, state.hand.cards, remaining_deck, aggression)
-    
-    if len(valuation) > 0:
-        return valuation[0][0]
-
-    return []
+    trick = Valuator.valuate(valid_tricks, state.hand.cards, remaining_deck)
+    return trick

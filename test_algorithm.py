@@ -468,7 +468,6 @@ class TestAlgorithmOneCard:
             players=players,  # Empty list for players
             # myHand=['KD', '3H', '5C', '5S', '6C', '7S', '7D', '7C', 'TS', 'JS', 'QC'],  # Example hand
             myHand=[
-                "QS",
                 "2S",
                 "9S",
                 "KC",
