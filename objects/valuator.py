@@ -7,44 +7,145 @@ from objects.three_card import *
 from objects.five_card import *
 
 # MERGE FROM HERE
+
+probability_params = {
+    1: [],
+    2: [],
+    3: [],
+    5: [],
+}
+
+
 class Valuator:
+    @staticmethod
+    def calculate_aggression(remaining_cards: int) -> float:
+        # Parameters
+        max_cards = 39  # Starting number of cards (52 - 13) start of game
+        min_cards = 4   # Lowest number of cards (1 for each player)
+        
+        # Normalize the number of remaining cards to a range from 0 to 1
+        normalized_cards = (max_cards - remaining_cards) / (max_cards - min_cards)
+        # Parameters for the sigmoid function
+        scaling_factor = 0.05  # Scaling factor to control the growth
+        growth_rate = 4.0  # Rate of growth
+        
+        # Calculate sigmoid function
+        aggression = min(scaling_factor * (math.exp(growth_rate * normalized_cards) - 1), 1)
+        
+        return aggression
+
+    @staticmethod
+    def calculate_trick_win_likelihood(trick: list[Card], remaining_deck: list[Card]):
+        possible_tricks = []
+        if len(trick) == 1:
+            possible_tricks = [[card] for card in remaining_deck]
+        elif len(trick) == 2:
+            possible_tricks, _ = Hand.get_2_card_tricks(remaining_deck)
+        elif len(trick) == 3:
+            possible_tricks, _ = Hand.get_3_card_tricks(remaining_deck)
+
+        if len(possible_tricks) == 0:
+            return 1
+
+        num_beaten = sum(1 for opponent_trick in possible_tricks if is_trick_stronger(opponent_trick, trick))
+        probability_of_beaten = num_beaten / len(possible_tricks)
+
+        return 1 - probability_of_beaten    
+
+    @staticmethod
+    def discard_trick(tricks: list[list[Card]], hand: list[Card], remaining_deck: list[Card], aggression: float = 1) -> list[Card]:
+        tricks.sort(key=lambda x: Valuator.calculate_trick_win_likelihood(x, remaining_deck))
+        probabilities = [Valuator.calculate_trick_win_likelihood(trick, remaining_deck) for trick in tricks]
+        print(aggression)
+        if aggression <= 0.5:
+            for i, prob in enumerate(probabilities):
+                if prob < 0.9:
+                    # use valuator here
+                    return tricks[i]
+            
+            return []
+        
+        if probabilities[-1] == 1.0:
+            # TODO: maybe check for good cards too instead of straight highest but who knows
+            return tricks[-1]
+        
+        return tricks[0]
+
+    @staticmethod
+    def reserve_trick_one(tricks: list[list[Card]], hand: list[Card], remaining_deck: list[Card], aggression: float = 1) -> list[Card]:
+        # when to play or pass a one card trick
+        tricks.sort(key=lambda x: Valuator.calculate_trick_win_likelihood(x, remaining_deck))
+        probabilities = [Valuator.calculate_trick_win_likelihood(trick, remaining_deck) for trick in tricks]
+
+        if aggression > 0.7:
+            if probabilities[-1] == 1:
+                return tricks[-1]
+            
+        # make this better
+        if aggression > 0.5:
+            return tricks[0]
+        
+        return []
+            
+    @staticmethod
+    def reserve_trick(tricks: list[list[Card]], hand: list[Card], remaining_deck: list[Card], aggression: float = 1) -> list[Card]:
+        if not tricks:
+            return []
+        
+        if (len(tricks[0]) == 1):
+            return Valuator.reserve_trick_one(tricks, hand, remaining_deck, aggression)
+        
+        # NOTE: Strictly for trick sizes greater than 1
+
+        tricks.sort(key=lambda x: Valuator.calculate_trick_win_likelihood(x, remaining_deck))
+        probabilities = [Valuator.calculate_trick_win_likelihood(trick, remaining_deck) for trick in tricks]
+
+        if aggression <= 0.5:
+            # use valuator here
+            return tricks[0]
+        
+        for i, prob in enumerate(probabilities):
+            if prob > 0.5:
+                # use valuator here
+                return tricks[i]
+        
+        return tricks[0]
+
+
     # valuate: takes in list of playable tricks all consisting of n cards (as well as auxiliary data) and evaluates their strength
     @staticmethod
-    def valuate(tricks: list[list[Card]], hand: list[Card], remaining_deck: list[Card], aggression: float = 1) -> list[tuple[list[Card], float]]:
+    def valuate(tricks: list[list[Card]], hand: list[Card], remaining_deck: list[Card]) -> list[Card]:
         # NOTE/TODO: aggression defaults to 1, which occurs for 5-card tricks.
         # This makes sense since we ideally want to play our best 5-card tricks early to prevent opponents from playing theirs,
         # with the hopes that we can break theirs up before they get a chance to play it.
         # Similar logic also occurs when setting value = 1 for strength >= max(remaining_valuations)
         # This should probably be more obvious in the code logic :/ - feel free to fix
+        aggression = Valuator.calculate_aggression(len(remaining_deck))
         valuation = []
+        discard = []
+        reserve = []
 
         for trick in tricks:
-            value = 1       # start off with unity value
-
-            # penalise tricks containing cards that are part of larger tricks
+            reserved = False
             for card in trick:
-                if Valuator.in_trick(card, hand, size=len(trick)+1):
-                    value *= 0.2
+                if Valuator.in_trick(card, hand, len(trick)+1):
+                    reserve.append(trick)
+                    reserved = True
+                    break
 
-            # penalise high cards ... unless they're the strongest in the remaining deck
-            # (save our high cards for when they count)
-            remaining_valuations = list(map(Card.strength, remaining_deck))
-            for card in trick:
-                strength = Card.strength(card)
-                if len(remaining_valuations) > 0 and strength < max(remaining_valuations):
-                    value *= Valuator.aggression_curve(aggression, strength)
-                
-                if strength >= max(remaining_valuations):
-                    value = 1               # if the card is the strongest in the deck, play it!
+            if not reserved:
+                discard.append(trick)
 
-            valuation.append( (trick, value) )
-
-        valuation.sort(key=lambda x: x[1], reverse=True)      # sort by highest valuation
-
-        if len(tricks) > 0:
-            print(f"[VALUATOR]: valuation of tricks of size {len(tricks[0])} -- {valuation}")
-
-        return valuation
+        # NOTE: Create discard and reserve piles
+        if len(discard) > 0:
+            # choose which trick to discard
+            trick = Valuator.discard_trick(discard, hand, remaining_deck, aggression)
+            if len(trick) > 0:
+                return trick
+        
+        # choose which trick to play if any at all
+        trick = Valuator.reserve_trick(reserve, hand, remaining_deck, aggression)
+        return trick
 
     @staticmethod
     def in_trick(card: Card, hand: list[Card], size: int = 2):      # TODO: make hand a class property
@@ -68,12 +169,4 @@ class Valuator:
     # value certain cards differently at different points in game
     @staticmethod
     def aggression_curve(aggression: float, strength: int) -> float:
-        if aggression < 0.25:       # early game -- shed low cards
-            return 1 - strength / 51
-        elif aggression < 0.75:     # mid game -- play mid-high cards most
-            if strength >= 36:
-                return 1 - ((strength - 36) / 15)**2
-            else:
-                return 1 / (1 + math.exp(-((strength-20)/5)))
-        else:                       # late game -- play high cards
-            return strength / 51
+        pass
