@@ -18,6 +18,33 @@ probability_params = {
 
 class Valuator:
     @staticmethod
+    def hold_back(cards: list[Card], trick_to_beat: list[Card], classifications: any, turns: int, opponents: list[int], trick: list[Card]) -> bool:
+        ca = classifications[0]
+        cb = classifications[1]
+        cc = classifications[2]
+        cd = classifications[3]
+
+        if len(trick_to_beat) == 1:
+            if len(cards) <= 2: return False
+            if any(o < 3 for o in opponents): return False
+            if len(ca) < (len(cb) + len(cc) + len(cd)) or min([len(cards), *opponents] > 6):
+                if trick == ca[-1]: return True
+                return False
+        
+        elif len(trick_to_beat):
+            if len(cards) <= 3: return False
+            if all(o > 2 for o in opponents):
+                if Rank.strength(trick[0].rank) == Rank.strength(Card('2S').rank): return True
+            return False
+
+        elif len(trick_to_beat) == 5:
+            # if len(cards) == 5: return False
+            # if min([len(cards), *opponents] > 6) and turns <= 4:
+            #     if len()
+            return False
+        return False
+
+    @staticmethod
     def calculate_aggression(remaining_cards: int) -> float:
         # Parameters
         max_cards = 39  # Starting number of cards (52 - 13) start of game
