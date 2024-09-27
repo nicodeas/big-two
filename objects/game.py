@@ -12,8 +12,9 @@ class Game:
         
         self.rounds_played = state.matchHistory[-1].gameHistory if state.matchHistory  else []
         # self.round = len(self.rounds_played)-1
-        self.opponents = [x.handSize for x in state.players]
-        del self.opponents[self.state.myPlayerNum]
+        self.opponents = [x.handSize for x in state.players] if state.matchHistory  else []
+        if len(self.opponents) > 0:
+            del self.opponents[self.state.myPlayerNum]
 
     @staticmethod
     def generate_deck():
