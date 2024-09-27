@@ -20,7 +20,13 @@ class Algorithm:
         self.state = None
 
     def start_of_game(self):
-        # TODO: have start of game with 5 card trick
+        tricks, _ = Hand.get_5_card_tricks(self.game.hand.cards)
+        trick_list = []
+        for key in tricks:
+            trick_list += tricks[key][0]
+        for trick in trick_list:
+            if Card('3D') in trick:
+                return [*trick], self.game
         
         tricks, _ = Hand.get_3_card_tricks(self.game.hand.cards)
         for trick in tricks:
@@ -40,7 +46,17 @@ class Algorithm:
         trick_sizes = [5, 3, 2, 1]
         for trick_size in trick_sizes:
             action, myData = self.play_a_move(trick_size)
-            if action:
+
+            # keep strong pairs
+            flag = True
+            if trick_size == 5 and action in Hand.get_full_house_tricks(self.game.hand.cards)[0]:
+                pairs, _ = Hand.get_2_card_tricks(self.game.hand.cards)
+                for pair in pairs:
+                    if pair[0] in action and pair[1] in action and Card.strength(pair[0]) >= 39 and Card.strength(pair[1]) >= 39:
+                        print(f"Refrained from playing a 5-card trick {action} due to containing a high pair")
+                        flag = False
+
+            if action and flag:
                 return action, myData
             
         # Can't pass so play lowest valid card

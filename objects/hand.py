@@ -12,7 +12,7 @@ class Hand:
     # TODO: figure out multiplier
     FOUR_OF_A_KIND_MULTIPLIER = 1
     FLUSH_STRENGTH_MULTIPLIER = 1
-    FULL_HOUSE_STRENGHT_MULTIPLIER = 1
+    FULL_HOUSE_STRENGTH_MULTIPLIER = 1
 
     def __init__(self, cards: list[Card] | list[str]) -> None:
         self.cards = self.to_cards(cards)
@@ -174,7 +174,7 @@ class Hand:
                     tricks.append(combo)
                     value += sum(Card.strength(card) for card in combo)
 
-        return tricks, value * Hand.FULL_HOUSE_STRENGHT_MULTIPLIER
+        return tricks, value * Hand.FULL_HOUSE_STRENGTH_MULTIPLIER
 
     @staticmethod
     def get_four_of_a_kind_tricks(
